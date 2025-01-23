@@ -1,0 +1,8 @@
+pyaudio
+pybind11
+openai-whisper
+vosk
+pyttsx3
+paho-mqtt
+configobj
+snakeviz

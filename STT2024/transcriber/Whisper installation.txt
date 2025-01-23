@@ -1,0 +1,14 @@
+Whisper is not built for offline use. Therefore, you must first install some requisites.
+1. https://developer.nvidia.com/cuda-downloads
+2. FFMPEG. To install this on windows, run the following in powershell:
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+    irm get.scoop.sh | iex
+    scoop install ffmpegr
+
+    To install on mac, use brew install ffmpeg
+    
+3. Then run pip install git+https://github.com/openai/whisper.git and pip install blobfile
+
+4. Update file links in your local copy of openai_public.py which will be installed in your python folder e.g. C:\Users[UserName]\AppData\Local\Programs\Python\Python310-32\Lib\site-packagespython3.9/site-packages/tiktoken_ext/openai_public.py to point to where you downloaded the files.
+   
+   Also remove the URL "https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/" and replace it with your local copy, e.g. "C:/Users/[Username]/.cache/whisper/vocab.bpe" and "C:/Users/[Username]/.cache/whisper/encoder.json"

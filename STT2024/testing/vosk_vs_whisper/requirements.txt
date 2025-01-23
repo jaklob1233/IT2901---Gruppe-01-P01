@@ -1,0 +1,9 @@
+numpy
+pandas
+matplotlib
+Levenshtein
+psutil
+seaborn
+whisper
+vosk
+wave
