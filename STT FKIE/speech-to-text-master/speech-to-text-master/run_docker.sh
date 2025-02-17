@@ -1,0 +1,1 @@
+docker run --rm -d --network host --name speechtotext speechtotext

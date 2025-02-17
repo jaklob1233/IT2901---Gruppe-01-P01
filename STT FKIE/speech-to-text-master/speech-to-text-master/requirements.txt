@@ -1,0 +1,34 @@
+# ------------ openapi client
+urllib3 >= 1.25.3, < 3.0.0
+python_dateutil >= 2.8.2
+pydantic >= 2
+typing-extensions >= 4.7.1
+
+# ------------ openapi server
+connexion[swagger-ui] >= 2.6.0; python_version>="3.6"
+connexion[swagger-ui] <= 2.14.2; python_version>"3.4" # prevent breaking dependencies from advent of connexion>=3.0
+swagger-ui-bundle >= 0.0.2
+# python_dateutil >= 2.6.0
+setuptools >= 21.0.0
+Flask == 2.1.1
+
+# ------------ speech-to-text
+pyaudio
+pybind11
+openai-whisper @ git+https://github.com/openai/whisper.git
+blobfile
+vosk
+pyttsx3
+paho-mqtt
+configobj
+
+# ------------ audio processing
+pydub
+requests
+Werkzeug
+
+# ------------ PyTorch and Torchaudio (CPU version)
+--index-url https://download.pytorch.org/whl/cpu
+--extra-index-url https://pypi.org/simple
+torch==2.5.0
+torchaudio==2.5.0
