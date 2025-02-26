@@ -1,0 +1,131 @@
+openapi: 3.1.0
+info:
+  title: SpeechToText
+  description: |-
+    This is an API for a Speech-to-Text component.
+  contact:
+    email: norman.jansen@fkie.fraunhofer.de
+  version: 0.1.0
+servers:
+  - url: http://localhost:8081/speechtotext
+paths:
+  /initialize:
+    put:
+      summary: Initialize the SpeechToText component
+      description: Initialize the SpeechToText component
+      operationId: initialize
+      parameters:
+        - name: speechtotext_variant
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - Whisper
+              - Vosk
+        - name: config_profile
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: webhook_url
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+  /provide_audio:
+    post:
+      summary: Provide audio to the SpeechToText component
+      description: Provide audio to the SpeechToText component
+      operationId: provide_audio
+      requestBody:
+        description: part of the audio (e.g. 20 ms) as byte array
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                length:
+                  type: integer
+                  description: "length of the audio in bytes."
+                  examples:
+                    - 640
+                sample_rate_hz:
+                  type: integer
+                  description: "sample rate in hz."
+                  examples:
+                    - 16000
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: "timestamp of the start of the audio samples in ms"
+                  examples:
+                    - 1732202565379
+                byte_array:
+                  type: string
+                  format: byte
+                  description: "base64 encoded binary content."
+                  examples:
+                    - "SGVsbG8gV29ybGQ="
+        required: true
+      responses:
+        '200':
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+# should (later) be a webhook. But since the code generators cannot handle this currently, modeled as normal method.
+#webhooks:
+  /on_new_text:
+    post:
+      requestBody:
+        description: Webhook for delivering new text from speech recognition to client
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timestamp_start:
+                  type: integer
+                  format: int64
+                  description: "timestamp (start) of the text corresponding to the audio samples in ms"
+                timestamp_end:
+                  type: integer
+                  format: int64
+                  description: "timestamp (end) of the text corresponding to the audio samples in ms"
+                text:
+                  type: string
+        required: true
+      responses:
+        '200':
+          description: Webhook acknowledged
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error_message:
+          type: string
+        detail:
+          type: object

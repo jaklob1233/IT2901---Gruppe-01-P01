@@ -1,0 +1,10 @@
+#ifndef MELP_VERSION_H
+#define MELP_VERSION_H
+
+#define MELP_VERSION_MAJOR 1
+#define MELP_VERSION_MINOR 2
+#define MELP_VERSION_PATCH 2
+#define MELP_VERSION "1.2.2"
+#define MELP_VERSION_DESCRIPTION ""
+
+#endif

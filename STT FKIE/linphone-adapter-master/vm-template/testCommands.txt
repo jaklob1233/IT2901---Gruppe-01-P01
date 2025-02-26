@@ -1,0 +1,10 @@
+sudo chmod +x execLinphoneSdk.sh
+sudo mkdir /root/.local/share/linphone
+
+sudo cp linphone-sdk.service /etc/systemd/system
+
+sudo systemctl start linphone-sdk
+
+sudo systemctl status linphone-sdk
+
+sudo /opt/linphone-sdk/bin/linphonecsh generic calls

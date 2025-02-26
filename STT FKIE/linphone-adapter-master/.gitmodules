@@ -1,0 +1,6 @@
+[submodule "linphone-sdk"]
+	path = linphone-sdk
+	url = https://gitlab.linphone.org/BC/public/linphone-sdk.git
+[submodule "lyra"]
+	path = lyra
+	url = https://github.com/google/lyra.git

@@ -1,0 +1,130 @@
+openapi: 3.1.0
+info:
+  title: TextToSpeech
+  description: |-
+    This is an API for a Text-to-Speech component.
+  contact:
+    email: norman.jansen@fkie.fraunhofer.de
+  version: 0.1.0
+servers:
+  - url: http://localhost:8082/texttospeech
+paths:
+  /initialize:
+    put:
+      summary: Initialize the TextToSpeech component
+      description: Initialize the TextToSpeech component
+      operationId: initialize
+      parameters:
+        - name: texttospeech_variant
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - standard
+              - coqui_yourtts
+              - coqui_bark
+        - name: config_profile
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: webhook_url
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+  /provide_text:
+    post:
+      summary: Provide text to the TextToSpeech component
+      description: Provide text to the TextToSpeech component
+      operationId: provide_text
+      requestBody:
+        description: text for the TextToSpeech component
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timestamp_start:
+                  type: integer
+                  format: int64
+                  description: "timestamp (start) of the text corresponding to the audio samples in ms"
+                timestamp_end:
+                  type: integer
+                  format: int64
+                  description: "timestamp (end) of the text corresponding to the audio samples in ms"
+                message_id:
+                  type: string
+                text:
+                  type: string
+        required: true
+      responses:
+        '200':
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+# should (later) be a webhook. But since the code generators cannot handle this currently, modeled as normal method.
+#webhooks:
+  /on_new_audio:
+    post:
+      requestBody:
+        description: Webhook for geting part of the audio as byte array corresponding to the text provided
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                length:
+                  type: integer
+                  description: "length of the audio in bytes."
+                  example: "640   # 16000 * 0,02 * 2 (16 kHz, 20 ms, 2 Bytes=16 Bit"
+                sample_rate_hz:
+                  type: integer
+                  description: "sample rate in hz."
+                  example: "16000"
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: "timestamp of the start of the audio samples in ms"
+                message_id:
+                  type: string
+                byte_array:
+                  type: string
+                  format: byte
+                  description: "base64 encoded binary content."
+        required: true
+      responses:
+        '200':
+          description: Webhook acknowledged
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error_message:
+          type: string
+        detail:
+          type: object

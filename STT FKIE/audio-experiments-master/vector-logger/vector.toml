@@ -1,0 +1,11 @@
+# Define the HTTP source to receive logs
+[sources.http]
+type = "http"
+address = "0.0.0.0:8686"  # Listen on port 8686 for log ingestion
+
+# Define the file sink to write logs to a JSON file
+[sinks.file_sink]
+type = "file"
+inputs = ["http"]  # Connect to the HTTP source
+path = "/var/log/central_logs.json"  # Path to store logs
+encoding.codec = "ndjson"  # Save logs in JSON format

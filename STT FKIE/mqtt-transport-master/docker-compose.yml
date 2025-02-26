@@ -1,0 +1,11 @@
+services:
+  mqtt-transport-portal:
+    container_name: mqtt-transport_portal-dev
+    build: .
+    command: sh -c "flask --app server.py run"
+    expose:
+      - 5000
+    ports:
+      - 5000:5000
+#    extra_hosts:
+#      - "host.docker.internal:192.168.1.130"

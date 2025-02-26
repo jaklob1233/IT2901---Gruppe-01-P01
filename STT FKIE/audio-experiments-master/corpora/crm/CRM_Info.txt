@@ -1,0 +1,72 @@
+Coordinate Response Measure (CRM) Speech Corpus:
+----------------------------------------------------------
+
+For more information on this corpus, see the ASA Paper:
+
+Bolia, R.S.; Nelson, W.T.; Ericson, M.A.; Simpson, B.D. (2000).  A speech corpus for multitalker communications research.  J. Acoust. Soc. Am. 107, 1065 (2000).
+
+Sentences have the format:
+  "Ready [Callsign] go to [Color] [Number] now."
+
+File names indicate the callsign, color, and number in the sentence.
+
+  Such that "030205.BIN" contains "Hopper", "White", and "Six".
+
+Callsigns: 
+  00 - Charlie
+  01 - Ringo
+  02 - Laker
+  03 - Hopper
+  04 - Arrow
+  05 - Tiger
+  06 - Eagle
+  07 - Baron
+
+Colors:
+  00 - Blue
+  01 - Red
+  02 - White
+  03 - Green
+
+Numbers:
+  00 - One
+  01 - Two
+  02 - Three
+  03 - Four
+  04 - Five
+  05 - Six
+  06 - Seven
+  07 - Eight
+
+
+These files are in a raw binary format as unsigned 16-bit integers with a sampling rate of 40,000 samples per second.
+
+
+The following Matlab script can be used to read in these files:
+
+fp=fopen(FILENAME,'rb');
+bin=fread(fp,'integer*2');
+fclose(fp);
+WAV = (bin/16384);
+
+
+The 'Keys' folder contains matlab data files containing the following marked samples:
+
+startcall = beginning of the callsign
+endcall = end of the callsign
+startw = start of the color target
+endw = end of the number target
+
+
+
+
+
+
+
+
+
+
+
+
+
+

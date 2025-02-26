@@ -1,0 +1,21 @@
+# ------------ openapi client
+requests
+
+# ------------ openapi server
+connexion[swagger-ui] >= 2.6.0; python_version>="3.6"
+connexion[swagger-ui] <= 2.14.2; python_version>"3.4"
+swagger-ui-bundle >= 0.0.2
+setuptools >= 21.0.0
+Flask==2.1.1
+Werkzeug
+
+# ------------ text-to-speech
+configobj
+pydub
+tts
+
+# ------------ PyTorch and Torchaudio (CPU version)
+--index-url https://download.pytorch.org/whl/cpu
+--extra-index-url https://pypi.org/simple
+torch==2.5.1
+torchaudio==2.5.1

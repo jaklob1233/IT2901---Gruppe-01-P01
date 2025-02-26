@@ -1,0 +1,12 @@
+[Unit]
+Description=linphone-sdk
+After=network.target systemd.logind.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Environment="PATH=/opt/linphone-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/home/toor/execLinphoneSdk.sh
+
+[Install]
+WantedBy=multi-user.target

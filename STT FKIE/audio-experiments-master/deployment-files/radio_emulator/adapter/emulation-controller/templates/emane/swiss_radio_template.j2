@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE platform SYSTEM "file:///usr/share/emane/dtd/platform.dtd">
+<platform>
+    <param name="otamanagerchannelenable" value="off"/>
+    <param name="eventservicegroup" value="{{emane_event_ip}}:{{emane_event_port}}"/>
+    <param name="eventservicedevice" value="lo"/>
+    <param name="controlportendpoint" value="{{emane_control_ip}}:{{emane_control_port}}"/>
+
+    {% for node in nodes %}
+    <nem id="{{ node.nem_id }}" definition="swiss_radio_nem.xml">
+
+        <!--transport definition="transrawrohcrtp.xml">
+            <param name="device" value="{{ node.vlan_interface }}"/>
+        </transport-->
+
+        <transport definition="transraw.xml">
+            <param name="device" value="{{ node.vlan_interface }}"/>
+        </transport>
+
+        <mac definition="swiss_radio_mac.xml">
+            <param name='fragmentcheckthreshold' value='2'/>
+            <param name='fragmenttimeoutthreshold' value='5'/>
+            <param name='neighbormetricdeletetime' value='60.0'/>
+            <param name='neighbormetricupdateinterval' value='1.0'/>
+            <param name='queue.aggregationenable' value='on'/>
+            <param name='queue.aggregationslotthreshold' value='90.0'/>
+            <param name='queue.depth' value='255'/>
+            <param name='queue.fragmentationenable' value='on'/>
+            <param name='queue.strictdequeueenable' value='on'/>
+            <param name="pcrcurveuri" value='file://{{ pcr_curve_file_path }}'/>
+        </mac>
+
+        <phy>
+            <param name="fixedantennagain"         value="0.0"/>
+            <param name="fixedantennagainenable"   value="on"/>
+            <param name="noisemode"                value="all"/>
+            <param name="propagationmodel"         value="precomputed"/>
+            <param name="systemnoisefigure"        value="4.0"/>
+            <param name="subid"                    value="1"/>
+
+            <param name="txpower"                  value="{{ tx_power }}"/>
+            <param name="bandwidth"                value="{{ bandwidth }}"/>
+            <param name="frequency"                value="{{ frequency }}"/>
+            <param name="frequencyofinterest"      value="{{ frequency }}"/>
+        </phy>
+
+    </nem>
+    {% endfor %}
+
+</platform>

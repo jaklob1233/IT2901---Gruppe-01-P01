@@ -1,0 +1,17 @@
+.openapi-generator-ignore
+CMakeLists.txt
+README.md
+api/ApiBase.h
+api/DefaultApi.cpp
+api/DefaultApi.h
+impl/DefaultApiImpl.cpp
+impl/DefaultApiImpl.h
+main-api-server.cpp
+model/Error.cpp
+model/Error.h
+model/Helpers.cpp
+model/Helpers.h
+model/Provide_text_request.cpp
+model/Provide_text_request.h
+model/_on_new_audio_post_request.cpp
+model/_on_new_audio_post_request.h

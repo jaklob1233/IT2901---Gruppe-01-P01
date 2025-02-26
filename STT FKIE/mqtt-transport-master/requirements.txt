@@ -1,0 +1,6 @@
+flask
+paho-mqtt
+#Flask-MQTT
+
+apiflask
+requests

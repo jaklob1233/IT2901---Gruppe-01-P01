@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nem SYSTEM "file:///usr/share/emane/dtd/nem.dtd">
+<nem>
+    <!--transport definition="transrawrohcrtp.xml"/-->
+    <transport definition="transraw.xml"/>
+    <mac definition="swiss_radio_mac.xml"/>
+    <phy/>
+</nem>

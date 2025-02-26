@@ -1,0 +1,5 @@
+/experiments/
+/env/
+/.idea/**
+/deployment-files/home/toor/.linphonec
+/logs/*.log

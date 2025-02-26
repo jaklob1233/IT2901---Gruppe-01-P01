@@ -1,0 +1,84 @@
+# definition of experiment
+experiment_name:
+  25-01-28-experiment-STT
+
+skip_existing_results: True
+add_silence_at_end_of_audio_files_milliseconds: 5000
+radio_emulator_already_running: True
+
+codecs:
+  - speechtext_vosk_tacotron2
+
+network_profiles:
+#  - name: narrowband
+#    scenario: swiss_radio_two_nodes_narrowband.xml
+#    background_noise_file:
+#  - name: narrow_band_low_noise
+#    scenario: swiss_radio_two_nodes_narrowband.xml
+#    background_noise_file: TankBackgroundNoiseLow.wav
+  - name: wideband_high
+    scenario: swiss_radio_two_nodes_wideband_high.xml
+    background_noise_file:
+#  - name: wideband_medium
+#    scenario: swiss_radio_two_nodes_wideband_medium.xml
+#    background_noise_file:
+#  - name: wideband_low
+#    scenario: swiss_radio_two_nodes_wideband_low.xml
+#    background_noise_file:
+#  - name: wideband_medium_low_noise
+#    scenario: swiss_radio_two_nodes_wideband_medium.xml
+#    background_noise_file: TankBackgroundNoiseLow.wav
+
+corpora:
+  - name: itu
+    run_tests: True
+    languages:
+      - A_eng
+#      - B_eng
+#      - Dutch
+#      - Fi
+#      - Fr
+#      - Ger
+#      - Gr
+#      - Ita
+#      - Nor
+#      - Port
+#      - Ar
+#      - Ch
+#      - Da
+#      - Hin
+#      - Hu
+#      - Ja
+#      - Po
+#      - Ru
+#      - Sp
+#      - Swe
+    gender:
+      - f
+      - m
+    samples_count: 1 #8
+#  - name: abcmrt
+#    run_tests: True
+#    speaker:
+#      - F1
+#      - F3
+#      - M3
+#      - M4
+#    samples_count: 5 # 50
+#    word_count: 6
+
+# definitions related to experiment's network setup
+linphone_vms:
+  - 192.168.100.11
+  - 192.168.100.12
+linphone_vm_login:
+  - toor
+  - toor
+
+radio_emulator_vm: 192.168.100.13
+radio_emulator_login:
+  - root
+  - root
+radio_emulator_nodes_interfaces:
+  - emunet0.2891
+  - emunet0.2892

@@ -1,0 +1,147 @@
+openapi: 3.1.0
+info:
+  title: MqttTransport
+  description: |-
+    This is an API for a MQTT-Transport component.
+  contact:
+    email: norman.jansen@fkie.fraunhofer.de
+  version: 0.1.0
+servers:
+  - url: http://localhost:5000/mqtttransport
+paths:
+  /initialize:
+    put:
+      summary: Initialize the MQTT-Transport component
+      description: Initialize the MQTT-Transport component
+      operationId: initialize
+      parameters:
+        - name: mqtt_variant
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - Standard
+              - MQTT-UDP
+        - name: config_profile
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: base_topic
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: mqtt_server_ip
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: mqtt_server_port
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: node_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: webhook_url
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+  /send_message:
+    post:
+      summary: Send message via MQTT Transport component
+      description: Send message via MQTT Transport component
+      operationId: send_message
+      parameters:
+        - name: source
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "IP address of the source."
+        - name: destination
+          in: query
+          required: false
+          schema:
+            type: string
+          description: "IP address of the destination (optional, broadcast if not specified)."
+      requestBody:
+        description: the message
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+# should (later) be a webhook. But since the code generators cannot handle this currently, modeled as normal method.
+#webhooks:
+  /on_new_message:
+    post:
+      requestBody:
+        description: Webhook for receiving message from MQTT Transport component
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      responses:
+        '200':
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error_message:
+          type: string
+        detail:
+          type: object
+
+    Message:
+      type: object
+      required: [ sender_id, receiver_id, message_id, message, timestamp ]
+      properties:
+        sender_id:
+          type: string
+        receiver_id:
+          type: string
+        message_id:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+          examples:
+            - 1732202565379
