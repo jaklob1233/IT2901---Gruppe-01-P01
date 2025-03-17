@@ -1,11 +1,8 @@
 """whisper_transcriber"""
 
-import logging
-import tempfile
-import wave
-
 import pyaudio
 import whisper
+import numpy as np
 
 from speech_to_text.transcriber.transcriber_base_model import TranscriberBaseModel
 
@@ -39,17 +36,16 @@ class WhisperTranscriber(TranscriberBaseModel):
         self.data.append(data)
 
     def get_results(self) -> str:
-        with tempfile.NamedTemporaryFile(delete=True, suffix=".wav") as t:
-            wf = wave.open(t.name, 'wb')
-            wf.setnchannels(1)
-            wf.setsampwidth(self.p.get_sample_size(pyaudio.paInt16))
-            wf.setframerate(44100)
-            wf.writeframes(b''.join(self.data))
-            wf.close()
-            logging.info(t.name)
-            result = self.model.transcribe(t.name)["text"]
+        # Convert byte data to numpy array (16-bit PCM → float32)
+        audio_np = np.frombuffer(b''.join(self.data), dtype=np.int16).astype(np.float32)
 
-        return result
+        # Normalize PCM 16-bit audio to range [-1, 1] (Whisper requirement)
+        audio_np /= 32768.0
+
+        # Transcribe using Whisper
+        whisper_result = self.model.transcribe(audio_np)["text"]
+
+        return whisper_result
 
     def clear_data(self) -> None:
         self.data = []

@@ -111,7 +111,7 @@ def provide_audio(provide_audio_request=None):
 
     if connexion.request.is_json:
         provide_audio_request = ProvideAudioRequest.from_dict(connexion.request.get_json())  # noqa: E501
-        logger.info(provide_audio_request)
+        logger.debug(provide_audio_request)
 
     # --- call speech to text transcription
     logger.info("Running speechtotext on audio")

@@ -102,7 +102,17 @@ class SpeechtotextConnector:
                 logger.debug("Initializing buffer start timestamp")
                 self.current_buffer_start_timestamp = timestamp
                 self.audio_buffer = AudioSegment.silent(duration=0)  # Initialize buffer if empty
+            else:
+                # Calculate the current buffer end timestamp (in milliseconds)
+                current_buffer_end = self.current_buffer_start_timestamp + len(self.audio_buffer)
+                # If there's a gap between the last audio and the new timestamp, insert silence.
+                if timestamp > current_buffer_end:
+                    gap_duration = timestamp - current_buffer_end
+                    logger.debug(f"Detected gap in audio. Inserting {gap_duration} ms of silence")
+                    silence_segment = AudioSegment.silent(duration=gap_duration)
+                    self.audio_buffer += silence_segment
 
+            # Append the new audio segment to the buffer
             self.audio_buffer += audio_segment
             buffer_end_timestamp = self.current_buffer_start_timestamp + len(self.audio_buffer)
             logger.debug(

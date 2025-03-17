@@ -136,7 +136,7 @@ class TestSpeechToText:
         if mode == "transcribe":
             # Initialize the connector
             initialized = self.connector.initialize_speechtotext(
-                speechtotext_variant="Vosk",
+                speechtotext_variant="Whisper",
                 config_profile="speech_to_text/config.ini",
                 webhook_url="http://localhost:5000/webhook"
             )
