@@ -55,4 +55,15 @@ def provide_audio(body):  # noqa: E501
     provide_audio_request = body
     if connexion.request.is_json:
         provide_audio_request = ProvideAudioRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        logger.debug(provide_audio_request)
+
+    # --- call speech to text transcription
+    logger.info("Running speechtotext on audio")
+    success = speechtotext.run_speechtotext_on_audio(audio=provide_audio_request.byte_array,
+                                                     sample_rate=provide_audio_request.sample_rate_hz,
+                                                     length=provide_audio_request.length,
+                                                     timestamp=provide_audio_request.timestamp)
+
+    if not success:
+        abort(400)
+    return "Speech-to-text transcription successfully started!"
