@@ -12,7 +12,7 @@ def main():
                 arguments={'title': 'SpeechToText'},
                 pythonic_params=True)
 
-    app.run(port=8081)
+    app.run(port=8080)
 
 
 if __name__ == '__main__':
