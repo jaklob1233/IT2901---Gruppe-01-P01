@@ -1,4 +1,4 @@
-Build Docker with:
+From directory speech-to-text-master, build Docker with:
 
 ```
 docker build -t speectotext .
