@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: norman.jansen@fkie.fraunhofer.de
+  description: This is an API for a Speech-to-Text component.
+  title: SpeechToText
+  version: 0.1.0
+servers:
+- url: https://localhost:8081/speechtotext
+paths:
+  /initialize:
+    put:
+      description: Initialize the SpeechToText component
+      operationId: initialize
+      parameters:
+      - explode: true
+        in: query
+        name: speechtotext_variant
+        required: true
+        schema:
+          enum:
+          - Whisper
+          - Vosk
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: config_profile
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: webhook_url
+        required: true
+        schema:
+          title: text
+          type: string
+        style: form
+      responses:
+        "200":
+          description: Success
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+      summary: Initialize the SpeechToText component
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /on_new_text:
+    post:
+      operationId: on_new_text_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_on_new_text_post_request'
+        description: Webhook for delivering new text from speech recognition to client
+      responses:
+        "200":
+          description: Webhook acknowledged
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /provide_audio:
+    post:
+      description: Provide audio to the SpeechToText component
+      operationId: provide_audio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/provide_audio_request'
+        description: part of the audio (e.g. 20 ms) as byte array
+        required: true
+      responses:
+        "200":
+          description: Success
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+      summary: Provide audio to the SpeechToText component
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    Error:
+      example:
+        error_message: error_message
+        detail: "{}"
+      properties:
+        error_message:
+          title: error_message
+          type: string
+        detail:
+          title: detail
+          type: object
+      title: Error
+    provide_audio_request:
+      properties:
+        length:
+          description: length of the audio in bytes.
+          title: length
+          type: integer
+        sample_rate_hz:
+          description: sample rate in hz.
+          title: sample_rate_hz
+          type: integer
+        timestamp:
+          description: timestamp of the start of the audio samples
+          title: timestamp
+          type: integer
+        byte_array:
+          description: base64 encoded binary content.
+          format: byte
+          title: byte_array
+          type: string
+      title: provide_audio_request
+    _on_new_text_post_request:
+      properties:
+        timestamp_start:
+          description: timestamp (start) of the text corresponding to the audio samples
+          title: timestamp_start
+          type: integer
+        timestamp_end:
+          description: timestamp (end) of the text corresponding to the audio samples
+          title: timestamp_end
+          type: integer
+        text:
+          title: text
+          type: string
+      title: _on_new_text_post_request
