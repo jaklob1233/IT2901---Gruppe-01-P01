@@ -72,3 +72,6 @@ target/
 
 ## ------------- includes
 models/
+
+#OS generated files
+.DS_Store
