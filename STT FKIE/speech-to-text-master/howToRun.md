@@ -1,7 +1,7 @@
 From directory speech-to-text-master, build Docker with:
 
 ```
-docker build -t speectotext .
+docker build -t speechtotext .
 ```
 
 Run the docker container in terminal:
