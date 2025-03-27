@@ -1,69 +1,77 @@
+import numpy as np
 import connexion
-from typing import Dict
-from typing import Tuple
-from typing import Union
+from typing import Dict, Tuple, Union
 
-from openapi_server.models.error import Error  # noqa: E501
-from openapi_server.models.on_new_text_post_request import OnNewTextPostRequest  # noqa: E501
-from openapi_server.models.provide_audio_request import ProvideAudioRequest  # noqa: E501
-from openapi_server import util
+from openapi_server.models.error import Error
+from openapi_server.models.on_new_text_post_request import OnNewTextPostRequest
+from openapi_server.models.provide_audio_request import ProvideAudioRequest
+
+from speech_to_text.transcriber.whisper_transcriber import WhisperTranscriber
+import base64
+
+model_instance = None
+
+def initialize(speechtotext_variant, config_profile, webhook_url):
+    global model_instance
+
+    if speechtotext_variant.lower() == "whisper":
+        model_name = config_profile or "base"
+        model_path = "./models"
+
+        VALID_MODELS = ["tiny", "base", "small", "medium", "large"]
+        if model_name not in VALID_MODELS:
+            return {"error": f"Invalid model '{model_name}'. Must be one of {VALID_MODELS}"}, 400
+
+        try:
+            model_instance = WhisperTranscriber(name=model_name, path=model_path)
+            return {
+                "status": "Whisper initialized",
+                "model": model_name,
+                "webhook_url": webhook_url
+            }
+        except Exception as e:
+            return {"error": f"Initialization failed: {str(e)}"}, 500
+
+    return {"error": f"Unsupported variant: {speechtotext_variant}"}, 400
 
 
-def initialize(speechtotext_variant, config_profile, webhook_url):  # noqa: E501
-    """Initialize the SpeechToText component
+def provide_audio(body):
+    global model_instance
 
-    Initialize the SpeechToText component # noqa: E501
+    if model_instance is None:
+        return {"error": "Model not initialized. Call /initialize first."}, 400
 
-    :param speechtotext_variant: 
-    :type speechtotext_variant: str
-    :param config_profile: 
-    :type config_profile: str
-    :param webhook_url: 
-    :type webhook_url: str
-
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]
-    """
-    return 'do some magic!'
-
-
-def on_new_text_post(body=None):  # noqa: E501
-    """on_new_text_post
-
-     # noqa: E501
-
-    :param on_new_text_post_request: Webhook for delivering new text from speech recognition to client
-    :type on_new_text_post_request: dict | bytes
-
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]
-    """
-    on_new_text_post_request = body
     if connexion.request.is_json:
-        on_new_text_post_request = OnNewTextPostRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        provide_audio_request = ProvideAudioRequest.from_dict(connexion.request.get_json())
+
+        try:
+            # Decode base64 audio bytes
+            audio_bytes = base64.b64decode(provide_audio_request.byte_array)
+
+            # Ensure even length of audio bytes
+            if len(audio_bytes) % 2 != 0:
+                audio_bytes = audio_bytes[:-1]
+
+            # Convert raw audio bytes to NumPy array (PCM float32)
+            audio_np = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32)
+
+            # Send audio to Whisper model
+            model_instance.clear_data()
+            model_instance.accept_data(audio_bytes)  # send raw bytes
+            transcription = model_instance.get_results()
+            return {"transcription": transcription}
 
 
-def provide_audio(body):  # noqa: E501
-    """Provide audio to the SpeechToText component
+        except Exception as e:
+            return {"error": str(e)}, 500
 
-    Provide audio to the SpeechToText component # noqa: E501
+    return {"error": "Invalid request"}, 400
 
-    :param provide_audio_request: part of the audio (e.g. 20 ms) as byte array
-    :type provide_audio_request: dict | bytes
 
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]
-    """
-    provide_audio_request = body
+def on_new_text_post(body=None):
     if connexion.request.is_json:
-        provide_audio_request = ProvideAudioRequest.from_dict(connexion.request.get_json())  # noqa: E501
-        logger.debug(provide_audio_request)
+        on_new_text_post_request = OnNewTextPostRequest.from_dict(connexion.request.get_json())
+        # Add your webhook logic here
+        return {"status": "Webhook triggered"}
 
-    # --- call speech to text transcription
-    logger.info("Running speechtotext on audio")
-    success = speechtotext.run_speechtotext_on_audio(audio=provide_audio_request.byte_array,
-                                                     sample_rate=provide_audio_request.sample_rate_hz,
-                                                     length=provide_audio_request.length,
-                                                     timestamp=provide_audio_request.timestamp)
-
-    if not success:
-        abort(400)
-    return "Speech-to-text transcription successfully started!"
+    return {"error": "Invalid request"}, 400
