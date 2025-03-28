@@ -2,11 +2,11 @@ import requests
 import base64
 
 url = 'http://localhost:8080/speechtotext/'
-audio_file = 'test-sound/test.wav'
+audio_file = 'test-sound/YAF_bar_sad.wav'
 
 init_params = {
     "speechtotext_variant": "Whisper",  #
-    "config_profile": "speech_to_text/config.ini",
+    "config_profile": "base",
     "webhook_url": "http://localhost:5000/webhook"
 }
 
@@ -23,7 +23,7 @@ with open(audio_file, 'rb') as audio_file:
 payload = {
     "byte_array": byte_array,
     "length": len(byte_array),
-    "sample_rate_hz": 48000,
+    "sample_rate_hz": 44100,
     "timestamp": 0 
 }
 

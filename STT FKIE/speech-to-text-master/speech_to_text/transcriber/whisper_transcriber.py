@@ -1,6 +1,9 @@
 import pyaudio
 import whisper
 import numpy as np
+import soundfile as sf
+import librosa
+import io
 
 from speech_to_text.transcriber.transcriber_base_model import TranscriberBaseModel
 
@@ -21,18 +24,22 @@ class WhisperTranscriber(TranscriberBaseModel):
         print(f"[DEBUG] Total raw audio size: {len(raw_audio)} bytes")
 
         try:
-            # Skip WAV header (first 44 bytes)
-            if raw_audio[:4] == b'RIFF':
-                print("[INFO] Detected WAV header — stripping 44 bytes")
-                raw_audio = raw_audio[44:]
+            audio_stream = io.BytesIO(raw_audio)
+            audio_np, sr = sf.read(audio_stream)
 
-            # Convert to float32 PCM
-            audio_np = np.frombuffer(raw_audio, dtype=np.int16).astype(np.float32)
-            audio_np /= 32768.0  # Normalize
+            # Convert to mono if stereo
+            if len(audio_np.shape) > 1:
+                print("[INFO] Converting stereo to mono")
+                audio_np = audio_np.mean(axis=1)
 
-            print(f"[DEBUG] Audio shape: {audio_np.shape}, dtype: {audio_np.dtype}")
+            # Resample to 16000 Hz
+            if sr != 16000:
+                print(f"[INFO] Resampling from {sr} Hz to 16000 Hz")
+                audio_np = librosa.resample(audio_np, orig_sr=sr, target_sr=16000).astype(np.float32)
+                sr = 16000
 
-            # Transcribe
+            print(f"[DEBUG] Final audio shape: {audio_np.shape}, Sample rate: {sr}")
+
             result = self.model.transcribe(audio_np, fp16=False)
             print(f"[RESULT] Whisper output: {result}")
 

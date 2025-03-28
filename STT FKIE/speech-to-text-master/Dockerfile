@@ -20,7 +20,8 @@ RUN apt-get update && \
     build-essential \
     git \
     curl \
-    unzip && \
+    unzip \
+    libsndfile1 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install ffmpeg manually
@@ -84,7 +85,8 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python
 
 # TODO check if needed
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends portaudio19-dev && \
+    apt-get install -y --no-install-recommends portaudio19-dev \
+    libsndfile1 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=intermediate /install /usr/local

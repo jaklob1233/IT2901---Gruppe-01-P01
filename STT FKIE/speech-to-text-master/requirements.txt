@@ -27,6 +27,10 @@ pydub
 requests
 Werkzeug
 
+# ------------ advanced audio handling
+librosa
+soundfile
+
 # ------------ PyTorch and Torchaudio (CPU version)
 --index-url https://download.pytorch.org/whl/cpu
 --extra-index-url https://pypi.org/simple
