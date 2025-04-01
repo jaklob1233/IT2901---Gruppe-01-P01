@@ -1,4 +1,4 @@
-IMAGE_NAME="mqtttransport"
+IMAGE_NAME="speechtotext"
 VERSION="latest"
 
 # build Docker
