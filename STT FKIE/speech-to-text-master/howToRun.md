@@ -18,10 +18,16 @@ docker run --rm -p 8080:8080 --name speechtotext speechtotext
 
 OR
 
-Run the docker container in detached mode:
+Run the docker container in detached mode (On Mac):
 
 ```
 docker run --rm -d --network host --name speechtotext speechtotext
+```
+
+Run the docker container in detached mode (On Windows):
+
+```
+docker run --rm -d -p 8080:8080 --name speechtotext speechtotext
 ```
 
 Open localhost on:
