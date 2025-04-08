@@ -52,24 +52,13 @@ class Transcriber:
         if speechtotext_variant == "Whisper":
             model_size = model.get("size")
             model_language = model.get("language")
-            self.__transcriber = WhisperTranscriber(f"{model_size}.{model_language}", model_path)
+            if model_language == "multilingual":
+                self.__transcriber = WhisperTranscriber(model_size, model_path)
+            else:
+                self.__transcriber = WhisperTranscriber(f"{model_size}.{model_language}", model_path)
         elif speechtotext_variant == "Vosk":
             self.__transcriber = VoskTranscriber(model_path)
 
-        # self.models = {}
-        # for model_name, model in models_config.items():
-        #     transcriber = model.get("transcriber")
-        #     path = model.get("path")
-        #     language = model.get("language")
-        #     size = model.get("size")
-        #
-        #     if transcriber == "vosk":
-        #         self.models[model_name] = VoskTranscriber(path)
-        #     elif transcriber == "whisper":
-        #         self.models[model_name] = WhisperTranscriber(f"{size}.{language}", path)
-        #
-        # model: str = config["TRANSCRIBER"].get("transcriber", list(self.models.keys())[0])
-        # self.__transcriber = self.models[model]
 
     def accept_data(self, data: bytes) -> None:
         """

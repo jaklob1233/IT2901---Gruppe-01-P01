@@ -6,6 +6,9 @@ import numpy as np
 
 from speech_to_text.transcriber.transcriber_base_model import TranscriberBaseModel
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class WhisperTranscriber(TranscriberBaseModel):
     """
@@ -35,7 +38,7 @@ class WhisperTranscriber(TranscriberBaseModel):
     def accept_data(self, data: bytes) -> None:
         self.data.append(data)
 
-    def get_results(self) -> str:
+    def get_results(self):
         # Convert byte data to numpy array (16-bit PCM → float32)
         audio_np = np.frombuffer(b''.join(self.data), dtype=np.int16).astype(np.float32)
 
@@ -43,9 +46,10 @@ class WhisperTranscriber(TranscriberBaseModel):
         audio_np /= 32768.0
 
         # Transcribe using Whisper
-        whisper_result = self.model.transcribe(audio_np)["text"]
+        whisper_result = self.model.transcribe(audio_np)
 
-        return whisper_result
+        return whisper_result["text"]
+
 
     def clear_data(self) -> None:
         self.data = []
