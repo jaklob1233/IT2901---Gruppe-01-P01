@@ -4,7 +4,7 @@ from funasr import AutoModel
 from funasr.utils.postprocess_utils import rich_transcription_postprocess
 
 # Set the cache directory where the model will be downloaded and stored
-os.environ["MODELSCOPE_CACHE"] = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/Sensevoice/model"
+os.environ["MODELSCOPE_CACHE"] = "/home/dev/IT2901-Gruppe-01/IT2901---Gruppe-01-P01/STT FKIE/speech-emotion-recognition/Sensevoicemodel"
 
 # Define model to download
 model_name = "iic/SenseVoiceSmall"
@@ -17,16 +17,16 @@ model = AutoModel(
     trust_remote_code=True
 )
 
-# Path to your input audio file
-audio_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/AudioSamples/hehe-quie-funny-that-101soundboards.mp3"
+# # Path to your input audio file
+audio_path = "/home/dev/IT2901-Gruppe-01/IT2901---Gruppe-01-P01/STT FKIE/speech-to-text-master/test/samples/A_eng_f1.wav"
 
-# Load the audio file
+# # Load the audio file
 waveform, sample_rate = torchaudio.load(audio_path)
 
-# Ensure correct sample rate
-target_sample_rate = 16000
-if sample_rate != target_sample_rate:
-    waveform = torchaudio.transforms.Resample(sample_rate, target_sample_rate)(waveform)
+# # Ensure correct sample rate
+# target_sample_rate = 16000
+# if sample_rate != target_sample_rate:
+#     waveform = torchaudio.transforms.Resample(sample_rate, target_sample_rate)(waveform)
 
 # Run inference
 res = model.generate(
@@ -49,47 +49,47 @@ else:
 
 
 
-import re
-import torchaudio
-from funasr import AutoModel
-from model import SenseVoiceSmall
-from funasr.utils.postprocess_utils import rich_transcription_postprocess
+# import re
+# import torchaudio
+# from funasr import AutoModel
+# from model import SenseVoiceSmall
+# from funasr.utils.postprocess_utils import rich_transcription_postprocess
 
-# Define local model paths
-local_model_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/Sensevoice/model/models/iic/SenseVoiceSmall"
-local_vad_model_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/Sensevoice/model/models/iic/speech_fsmn_vad_zh-cn-16k-common-pytorch"
+# # Define local model paths
+# local_model_path = "/home/dev/IT2901-Gruppe-01/IT2901---Gruppe-01-P01/STT FKIE/speech-emotion-recognition/Sensevoicemodel/models/iic/SenseVoiceSmall"
+# local_vad_model_path = "/home/dev/IT2901-Gruppe-01/IT2901---Gruppe-01-P01/STT FKIE/speech-emotion-recognition/Sensevoicemodel/Sensevoicemodel/models/iic/speech_fsmn_vad_zh-cn-16k-common-pytorch"
 
-m, kwargs = SenseVoiceSmall.from_pretrained(model=local_model_path, device="cuda:0")
-m.eval()
-
-
-# Path to your input audio file
-# audio_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/AudioSamples/03-01-08-02-02-02-06.wav"
-audio_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/AudioSamples/SAVEE/ALL/JK_d05.wav"
-# audio_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/AudioSamples/AudioSamples/hehe-quie-funny-that-101soundboards.mp3"
+# m, kwargs = SenseVoiceSmall.from_pretrained(model=local_model_path, device="cuda:0")
+# m.eval()
 
 
-# Load the audio file
-waveform, sample_rate = torchaudio.load(audio_path)
+# # Path to your input audio file
+# # audio_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/AudioSamples/03-01-08-02-02-02-06.wav"
+# audio_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/AudioSamples/SAVEE/ALL/JK_d05.wav"
+# # audio_path = "C:/Users/elina/Desktop/NTNU/Bachelor/Model/Wave2Vec-Ehcalabres-wiam/AudioSamples/AudioSamples/hehe-quie-funny-that-101soundboards.mp3"
 
 
-# Ensure correct sample rate
-target_sample_rate = 16000
-if sample_rate != target_sample_rate:
-    print(f"Original Sample Rate: {sample_rate}, Resampling to {target_sample_rate}...")
-    resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=target_sample_rate)
-    waveform = resampler(waveform)
-    sample_rate = target_sample_rate  # Update sample rate after resampling
-print(waveform, sample_rate)
+# # Load the audio file
+# waveform, sample_rate = torchaudio.load(audio_path)
 
 
-res, meta_data = m.inference(
-    data_in=waveform,
-    language="auto", # "zh", "en", "yue", "ja", "ko", "nospeech"
-    use_itn=False,
-    ban_emo_unk=True,
-    **kwargs,
-)
+# # Ensure correct sample rate
+# target_sample_rate = 16000
+# if sample_rate != target_sample_rate:
+#     print(f"Original Sample Rate: {sample_rate}, Resampling to {target_sample_rate}...")
+#     resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=target_sample_rate)
+#     waveform = resampler(waveform)
+#     sample_rate = target_sample_rate  # Update sample rate after resampling
+# print(waveform, sample_rate)
 
-print(res)
-print(meta_data)
+
+# res, meta_data = m.inference(
+#     data_in=waveform,
+#     language="auto", # "zh", "en", "yue", "ja", "ko", "nospeech"
+#     use_itn=False,
+#     ban_emo_unk=True,
+#     **kwargs,
+# )
+
+# print(res)
+# print(meta_data)
