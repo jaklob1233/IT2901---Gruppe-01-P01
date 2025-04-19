@@ -11,7 +11,7 @@ import logging
 ## for file test
 import whisper
 import torch
-from pydub import AudioSegment
+from pydub import AudioSegment 
 
 os.makedirs("logs", exist_ok=True)
 from pydub import AudioSegment 
