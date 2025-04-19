@@ -4,7 +4,7 @@ from funasr import AutoModel
 from funasr.utils.postprocess_utils import rich_transcription_postprocess
 
 # Set the cache directory where the model will be downloaded and stored
-os.environ["MODELSCOPE_CACHE"] = "/home/dev/IT2901-Gruppe-01/IT2901---Gruppe-01-P01/STT FKIE/speech-emotion-recognition/Sensevoicemodel"
+os.environ["MODELSCOPE_CACHE"] = os.path.join(os.path.dirname(__file__), "model")
 
 # Define model to download
 model_name = "iic/SenseVoiceSmall"
@@ -17,7 +17,7 @@ model = AutoModel(
     trust_remote_code=True
 )
 
-# # Path to your input audio file
+""" # # Path to your input audio file
 audio_path = "/home/dev/IT2901-Gruppe-01/IT2901---Gruppe-01-P01/STT FKIE/speech-to-text-master/test/samples/A_eng_f1.wav"
 
 # # Load the audio file
@@ -45,7 +45,7 @@ if "text" in res[0]:
     print(text)
 else:
     print("Error: 'text' key is missing in the model output.")
-    print("Full response:", res)
+    print("Full response:", res) """
 
 
 
