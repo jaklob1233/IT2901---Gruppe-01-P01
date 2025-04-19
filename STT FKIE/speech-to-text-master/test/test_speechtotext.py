@@ -1,4 +1,5 @@
 import time
+import os
 import base64
 import threading
 import sounddevice as sd  # Use sounddevice for WSLg compatibility
@@ -14,9 +15,12 @@ from pydub import AudioSegment
 import os
 
 os.makedirs("logs", exist_ok=True)
+from pydub import AudioSegment 
 
 # Configure the log file and logger
 filename = "logs/server.log"
+log_dir = os.path.dirname(filename)
+os.makedirs(log_dir, exist_ok=True)
 
 logging.basicConfig(
     level=logging.DEBUG,

@@ -30,5 +30,8 @@ Werkzeug
 # ------------ PyTorch and Torchaudio (CPU version)
 --index-url https://download.pytorch.org/whl/cpu
 --extra-index-url https://pypi.org/simple
-torch==2.5.0
-torchaudio==2.5.0
+torch
+torchaudio
+
+sounddevice
+scipy
