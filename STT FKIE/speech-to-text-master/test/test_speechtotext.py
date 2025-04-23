@@ -206,6 +206,7 @@ class TestSpeechToText:
         if mode == "transcribe":
             initialized = self.connector.initialize_speechtotext(
                 speechtotext_variant="Whisper",
+                emotion_variant="SenseVoice",
                 config_profile="speech_to_text/config.ini",
                 webhook_url=None
             )
@@ -221,6 +222,7 @@ class TestSpeechToText:
         elif mode == "playfile":
             initialized = self.connector.initialize_speechtotext(
                 speechtotext_variant="Whisper",
+                emotion_variant="SenseVoice",
                 config_profile="speech_to_text/config.ini",
                 webhook_url=None
             )
