@@ -3,6 +3,8 @@ import base64
 from configobj import ConfigObj
 from openapi_client.api_client import SpeechToTextApiClient
 from speech_to_text.transcriber.transcriber import Transcriber
+from speech_emotion_recognition.emotion_model import EmotionModel
+
 from pydub import AudioSegment
 from pydub.silence import detect_nonsilent
 import threading
@@ -27,13 +29,14 @@ class SpeechtotextConnector:
 
     api_client = None
     transcriber = None
+    emotion_model = None 
 
     # Added attributes for queue and worker thread
     audio_queue = None
     worker_thread = None
 
 
-    def initialize_speechtotext(self, speechtotext_variant, config_profile, webhook_url):
+    def initialize_speechtotext(self, speechtotext_variant, emotion_variant, config_profile, webhook_url):
         logger.info("Initializing speechtotext connector")
         try:
             logger.debug(f"Loading configuration from: {config_profile}")
@@ -50,6 +53,7 @@ class SpeechtotextConnector:
             self.transcriber = Transcriber(speechtotext_variant, config_object)
             self.audio_buffer = AudioSegment.silent(duration=0)
             self.current_buffer_start_timestamp = None
+            self.emotion_model = EmotionModel(emotion_variant, config_object)
 
             # Stop existing worker thread **before** resetting the queue
             if self.worker_thread and self.worker_thread.is_alive():
@@ -200,13 +204,16 @@ class SpeechtotextConnector:
                 # Process the chunk
                 logger.info(f"Starting transcription for chunk: Start={start_time}ms, End={end_time}ms")
                 self.transcriber.accept_data(chunk.raw_data)
+                self.emotion_model.accept_data(chunk.raw_data)
 
                 result = self.transcriber.get_results()
+                result += self.emotion_model.get_results()
                 if result:
                     logger.info(f"Transcription result received: {result}")
                     print(f"Transcription result received: {result}")
 
                 self.transcriber.clear_data()
+                self.emotion_model.clear_data()
                 logger.debug("Transcriber data cleared after processing.")
 
                 if result:
