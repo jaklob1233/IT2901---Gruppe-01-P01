@@ -11,6 +11,9 @@ import logging
 import whisper
 import torch
 from pydub import AudioSegment
+import os
+
+os.makedirs("logs", exist_ok=True)
 
 # Configure the log file and logger
 filename = "logs/server.log"
@@ -203,6 +206,7 @@ class TestSpeechToText:
         if mode == "transcribe":
             initialized = self.connector.initialize_speechtotext(
                 speechtotext_variant="Whisper",
+                emotion_variant="SenseVoice",
                 config_profile="speech_to_text/config.ini",
                 webhook_url=None
             )
@@ -218,6 +222,7 @@ class TestSpeechToText:
         elif mode == "playfile":
             initialized = self.connector.initialize_speechtotext(
                 speechtotext_variant="Whisper",
+                emotion_variant="SenseVoice",
                 config_profile="speech_to_text/config.ini",
                 webhook_url=None
             )
