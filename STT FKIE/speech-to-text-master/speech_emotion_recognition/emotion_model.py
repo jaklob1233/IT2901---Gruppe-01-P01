@@ -24,7 +24,6 @@ class EmotionModel:
         else:
             raise ValueError(f"Unknown emotion model type: {model_type}")
 
-
     def accept_data(self, data: bytes) -> None:
         self.__emotion_model.accept_data(data)
 
