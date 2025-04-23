@@ -1,7 +1,7 @@
 # speech_to_text/emotion/emotion_model.py
 from .emotion_base_model import EmotionBaseModel
 from .sensevoice_emotion import SenseVoiceEmotion
-from .superb_emotion import SuperbEmotion
+# from .superb_emotion import SuperbEmotion
 from configobj import ConfigObj
 
 class EmotionModel:
