@@ -5,6 +5,8 @@ from openapi_client.api_client import SpeechToTextApiClient
 from speech_to_text.transcriber.transcriber import Transcriber
 from speech_emotion_recognition.emotion_model import EmotionModel
 
+from speech_emotion_recognition.emotion_model import EmotionModel
+
 from pydub import AudioSegment
 from pydub.silence import detect_nonsilent
 import threading
@@ -29,6 +31,7 @@ class SpeechtotextConnector:
 
     api_client = None
     transcriber = None
+    emotion_model = None 
     emotion_model = None 
 
     # Added attributes for queue and worker thread
@@ -59,6 +62,7 @@ class SpeechtotextConnector:
             self.emotion_model = EmotionModel(emotion_variant, emotion_config_object)
             self.audio_buffer = AudioSegment.silent(duration=0)
             self.current_buffer_start_timestamp = None
+            self.emotion_model = EmotionModel(emotion_variant, config_object)
             self.emotion_model = EmotionModel(emotion_variant, config_object)
 
             # Stop existing worker thread **before** resetting the queue
@@ -211,14 +215,17 @@ class SpeechtotextConnector:
                 logger.info(f"Starting transcription for chunk: Start={start_time}ms, End={end_time}ms")
                 self.transcriber.accept_data(chunk.raw_data)
                 self.emotion_model.accept_data(chunk.raw_data)
+                self.emotion_model.accept_data(chunk.raw_data)
 
                 result = self.transcriber.get_results()
+                result += self.emotion_model.get_results()
                 result += self.emotion_model.get_results()
                 if result:
                     logger.info(f"Transcription result received: {result}")
                     print(f"Transcription result received: {result}")
 
                 self.transcriber.clear_data()
+                self.emotion_model.clear_data()
                 self.emotion_model.clear_data()
                 logger.debug("Transcriber data cleared after processing.")
 
