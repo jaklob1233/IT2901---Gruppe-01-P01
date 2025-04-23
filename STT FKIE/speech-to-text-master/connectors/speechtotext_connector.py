@@ -36,24 +36,29 @@ class SpeechtotextConnector:
     worker_thread = None
 
 
-    def initialize_speechtotext(self, speechtotext_variant, emotion_variant, config_profile, webhook_url):
+    def initialize_speechtotext(self, speechtotext_variant, emotion_variant, transcriber_config_profile, emotion_config_profile, webhook_url):
         logger.info("Initializing speechtotext connector")
         try:
-            logger.debug(f"Loading configuration from: {config_profile}")
-            config_object = ConfigObj(config_profile)
+            logger.debug(f"Loading configuration from: {transcriber_config_profile}")
+            transcriber_config_object = ConfigObj(transcriber_config_profile)
+            emotion_config_object = ConfigObj(emotion_config_profile)
 
-            if not config_object:
-                logger.error(f"Configuration object loaded from {config_profile} is empty.")
+            if not transcriber_config_object:
+                logger.error(f"Configuration object loaded from {transcriber_config_profile} is empty.")
+                return False
+            
+            if not emotion_config_object:
+                logger.error(f"Configuration object loaded from {emotion_config_profile} is empty.")
                 return False
 
             if not webhook_url:
                 self.api_client = None
             else:
                 self.api_client = SpeechToTextApiClient(base_url=webhook_url)
-            self.transcriber = Transcriber(speechtotext_variant, config_object)
+            self.transcriber = Transcriber(speechtotext_variant, transcriber_config_object)
+            self.emotion_model = EmotionModel(emotion_variant, emotion_config_object)
             self.audio_buffer = AudioSegment.silent(duration=0)
             self.current_buffer_start_timestamp = None
-            self.emotion_model = EmotionModel(emotion_variant, config_object)
 
             # Stop existing worker thread **before** resetting the queue
             if self.worker_thread and self.worker_thread.is_alive():

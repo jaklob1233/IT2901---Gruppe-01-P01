@@ -207,7 +207,8 @@ class TestSpeechToText:
             initialized = self.connector.initialize_speechtotext(
                 speechtotext_variant="Whisper",
                 emotion_variant="SenseVoice",
-                config_profile="speech_to_text/config.ini",
+                transcriber_config_profile="speech_to_text/config.ini",
+                emotion_config_profile="speech_emotion_recognition/config.ini",
                 webhook_url=None
             )
             if not initialized:
@@ -223,7 +224,8 @@ class TestSpeechToText:
             initialized = self.connector.initialize_speechtotext(
                 speechtotext_variant="Whisper",
                 emotion_variant="SenseVoice",
-                config_profile="speech_to_text/config.ini",
+                transcriber_config_profile="speech_to_text/config.ini",
+                emotion_config_profile="speech_emotion_recognition/config.ini",
                 webhook_url=None
             )
             if not initialized:
@@ -254,7 +256,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Test Speech-to-Text or Loopback.")
-    parser.add_argument("--mode", choices=["transcribe", "loopback", "playfile"], default="transcribe",
+    parser.add_argument("--mode", choices=["transcribe", "loopback", "playfile"], default="playfile",
                         help="Mode to run the test: 'transcribe', 'loopback', or 'playfile'.")
     parser.add_argument("--duration", type=int, default=120, help="Duration of the test in seconds.")
     parser.add_argument("--wav", type=str, help="Path to a WAV file to play in 'playfile' mode.")
