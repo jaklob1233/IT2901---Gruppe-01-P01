@@ -14,9 +14,6 @@ import torch
 from pydub import AudioSegment
 import os
 
-os.makedirs("logs", exist_ok=True)
-from pydub import AudioSegment 
-
 # Configure the log file and logger
 filename = "logs/server.log"
 log_dir = os.path.dirname(filename)
