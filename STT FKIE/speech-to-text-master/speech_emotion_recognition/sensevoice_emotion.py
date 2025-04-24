@@ -1,9 +1,6 @@
 # sensevoice_emotion.py
-
-import os
 import torchaudio
 import torch
-import io
 from .Sensevoice.model import SenseVoiceSmall
 from .emotion_base_model import EmotionBaseModel
 
@@ -12,7 +9,7 @@ TARGET_SAMPLE_RATE = 16000
 class SenseVoiceEmotion(EmotionBaseModel):
     def __init__(self, model_path: str):
         self.model_path = model_path
-        self.model, self.kwargs, _ = self.load_model(model_path)
+        self.model, self.kwargs = self.load_model(model_path)
 
     def load_model(self, model_path):
         model, kwargs = SenseVoiceSmall.from_pretrained(
@@ -20,11 +17,10 @@ class SenseVoiceEmotion(EmotionBaseModel):
             device="cuda:0"
         )
         model.eval()
-        return model, kwargs, None  # You can return load time if needed
+        return model, kwargs
 
     def accept_data(self, data: bytes) -> None:
         """Accepts raw audio data as bytes."""
-        # waveform, sample_rate = torchaudio.load(io.BytesIO(data))
         dtype = torch.int16
         waveform = torch.frombuffer(data, dtype=dtype).float() / 32768.0  # Normalize to [-1, 1]
 
@@ -49,7 +45,8 @@ class SenseVoiceEmotion(EmotionBaseModel):
         )
         emotion_probs = dict(res[0]["possible_emotions"])
         dominant_emotion = max(emotion_probs, key=emotion_probs.get)
-        return dominant_emotion
+        probability = emotion_probs[dominant_emotion]
+        return f" {dominant_emotion} ({probability:.2f})"
 
     def clear_data(self) -> None:
         """Clears internal data."""
