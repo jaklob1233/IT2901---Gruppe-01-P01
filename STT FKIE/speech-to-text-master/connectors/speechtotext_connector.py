@@ -12,7 +12,6 @@ from pydub.silence import detect_nonsilent
 import threading
 import queue
 import logging
-import os
 
 logger = logging.getLogger(__name__)
 
