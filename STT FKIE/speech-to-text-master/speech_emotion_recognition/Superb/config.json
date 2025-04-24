@@ -55,18 +55,18 @@
   "hidden_dropout_prob": 0.1,
   "hidden_size": 1024,
   "id2label": {
-    "0": "Neutral",
-    "1": "Happy",
-    "2": "Angry",
-    "3": "Sad"
+    "0": "neu",
+    "1": "hap",
+    "2": "ang",
+    "3": "sad"
   },
   "initializer_range": 0.02,
   "intermediate_size": 4096,
   "label2id": {
-    "Angry": 2,
-    "Happy": 1,
-    "Neutral": 0,
-    "Sad": 3
+    "ang": 2,
+    "hap": 1,
+    "neu": 0,
+    "sad": 3
   },
   "layer_norm_eps": 1e-05,
   "layerdrop": 0.1,
