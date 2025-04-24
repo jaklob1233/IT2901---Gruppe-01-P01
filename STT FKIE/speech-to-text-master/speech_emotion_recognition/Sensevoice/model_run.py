@@ -3,8 +3,8 @@ import re
 import time
 import psutil
 import torchaudio
-from Sensevoice.model import SenseVoiceSmall
-from RealTime import realtime_dynamic_test
+from .model import SenseVoiceSmall
+# from RealTime import realtime_dynamic_test
 
 # Emotion mappings
 tess_label_mapping = {
