@@ -194,16 +194,16 @@ class TestSpeechToText:
 
     def run(self, mode="playfile"):
         # # Load the model and processor
-        # model = whisper.load_model('base.en', download_root='models/whisper_english_base')
-        
+        #model = whisper.load_model('base.en', download_root='models/whisper_english_base')
+        #
         # # Load your .wav file
-        # audio_file_path = "test/samples/A_eng_f1.wav"
-        
+        #audio_file_path = "test/samples/A_eng_f1.wav"
+        #
         # # Perform the transcription
-        # result = model.transcribe(audio_file_path)
-        
+        #result = model.transcribe(audio_file_path)
+        #
         # # Print the transcription
-        # print("Transcription:", result['text'])
+        #print("Transcription:", result['text'])
 
         logger.info("Starting Speech-to-Text Test...")
 
@@ -227,7 +227,7 @@ class TestSpeechToText:
         elif mode == "playfile":
             initialized = self.connector.initialize_speechtotext(
                 speechtotext_variant="Whisper",
-                emotion_variant="SenseVoice",
+                emotion_variant="Superb",
                 transcriber_config_profile="speech_to_text/config.ini",
                 emotion_config_profile="speech_emotion_recognition/config.ini",
                 webhook_url=None
