@@ -1,4 +1,7 @@
-/Superb/
-/Superb/*.json
-/Sensevoice/
+/Superb/pytorch_model.bin
+/Superb/.cache
+/Superb/.gitattributes
+/Superb/README.md
+
+/Sensevoice/model/
 

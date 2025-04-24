@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from funasr import AutoModel
-from funasr.utils.postprocess_utils import rich_transcription_postprocess
 from huggingface_hub import snapshot_download
 
 def downloadSuperb():
