@@ -35,7 +35,6 @@ class SuperbEmotion(EmotionBaseModel):
         probs = torch.nn.functional.softmax(logits, dim=-1)
         id2label = self.model.config.id2label
 
-        # Ensure correct key formatting
         emotion_probs = {id2label[i].capitalize(): float(probs[0][i]) for i in range(len(id2label))}
         predicted_emotion = max(emotion_probs, key=emotion_probs.get)
 
