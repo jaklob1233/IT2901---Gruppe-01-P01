@@ -1,6 +1,5 @@
 import time
 import os
-import os
 import base64
 import threading
 import sounddevice as sd  # Use sounddevice for WSLg compatibility
@@ -14,16 +13,8 @@ import whisper
 import torch
 from pydub import AudioSegment 
 
-os.makedirs("logs", exist_ok=True)
-from pydub import AudioSegment 
-
-os.makedirs("logs", exist_ok=True)
-from pydub import AudioSegment 
-
 # Configure the log file and logger
 filename = "logs/server.log"
-log_dir = os.path.dirname(filename)
-os.makedirs(log_dir, exist_ok=True)
 log_dir = os.path.dirname(filename)
 os.makedirs(log_dir, exist_ok=True)
 
@@ -52,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 
 class TestSpeechToText:
-    def __init__(self, duration=120, wav_file_path=None):
+    def __init__(self, duration=120, wav_file_path="test/samples/A_eng_f1.wav"):
         self.duration = duration
         self.sample_rate = 16000
         self.channels = 1
@@ -197,7 +188,7 @@ class TestSpeechToText:
             logger.error(f"Error during WAV file playback: {e}")
 
 
-    def run(self, mode="transcribe"):
+    def run(self, mode="playfile"):
         # # Load the model and processor
         #model = whisper.load_model('base.en', download_root='models/whisper_english_base')
         #
