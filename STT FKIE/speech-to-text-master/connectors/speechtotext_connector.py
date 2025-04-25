@@ -214,6 +214,7 @@ class SpeechtotextConnector:
                 self.emotion_model.accept_data(chunk.raw_data)
                 self.emotion_model.accept_data(chunk.raw_data)
 
+                # Get results from both models
                 result = self.transcriber.get_results()
                 result += self.emotion_model.get_results()
                 result += self.emotion_model.get_results()
@@ -221,6 +222,7 @@ class SpeechtotextConnector:
                     logger.info(f"Transcription result received: {result}")
                     print(f"Transcription result received: {result}")
 
+                # Clear data from both models
                 self.transcriber.clear_data()
                 self.emotion_model.clear_data()
                 self.emotion_model.clear_data()

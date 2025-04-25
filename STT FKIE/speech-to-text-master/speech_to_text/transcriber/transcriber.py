@@ -24,7 +24,7 @@ class Transcriber:
             Empties the internal storage of the class
 
     Returns:
-        A VoskTranscriber object
+        A Transcriber object
 
     """
     __transcriber: TranscriberBaseModel
