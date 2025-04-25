@@ -650,7 +650,7 @@ class SenseVoiceSmall(nn.Module):
     @staticmethod
     def from_pretrained(model:str=None, **kwargs):
         from funasr import AutoModel
-        model, kwargs = AutoModel.build_model(model=model, trust_remote_code=True, **kwargs)
+        model, kwargs = AutoModel.build_model(model=model, trust_remote_code=False, **kwargs)
         
         return model, kwargs
 
