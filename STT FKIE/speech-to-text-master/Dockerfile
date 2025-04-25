@@ -20,6 +20,12 @@ RUN apt-get update && \
     build-essential \
     git \
     curl \
+    gcc \
+    g++ \
+    cmake \
+    pkg-config \
+    libsndfile1 \
+    python3-dev \
     unzip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -35,7 +41,8 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN pip3 install --upgrade pip && \
-    pip3 install --prefix=/install -r requirements.txt
+    pip3 install --prefix=/install -r requirements.txt \
+    --extra-index-url https://download.pytorch.org/whl/cpu
 
 # locate the file and change the paths
 ENV SITE_PACKAGE_PATH="/install/lib/python3.11/site-packages"
@@ -95,6 +102,10 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends portaudio19-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libgomp1 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 COPY --from=intermediate /install /usr/local
 COPY --from=intermediate /usr/local/bin/ffmpeg /usr/local/bin
 COPY --from=intermediate /usr/local/bin/ffprobe /usr/local/bin
@@ -113,7 +124,9 @@ COPY connectors /usr/src/app/connectors
 COPY openapi_client /usr/src/app/openapi_client
 COPY openapi_server /usr/src/app/openapi_server
 COPY speech_to_text /usr/src/app/speech_to_text
+COPY speech_emotion_recognition /usr/src/app/speech_emotion_recognition
 COPY test /usr/src/app/test
+RUN python3 -m speech_emotion_recognition.downloadModels
 
 EXPOSE 8081
 

@@ -1,7 +1,6 @@
 # speech_to_text/emotion/superb_emotion.py
 import os
 import torch
-import librosa
 import numpy as np
 
 from .emotion_base_model import EmotionBaseModel
