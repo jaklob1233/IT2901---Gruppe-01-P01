@@ -9,8 +9,6 @@ from connectors.speechtotext_connector import SpeechtotextConnector
 import logging
 
 ## for file test
-import whisper
-import torch
 from pydub import AudioSegment 
 
 # Configure the log file and logger
@@ -223,7 +221,7 @@ class TestSpeechToText:
         elif mode == "playfile":
             initialized = self.connector.initialize_speechtotext(
                 speechtotext_variant="Whisper",
-                emotion_variant="Superb",
+                emotion_variant="SenseVoice",
                 transcriber_config_profile="speech_to_text/config.ini",
                 emotion_config_profile="speech_emotion_recognition/config.ini",
                 webhook_url=None
