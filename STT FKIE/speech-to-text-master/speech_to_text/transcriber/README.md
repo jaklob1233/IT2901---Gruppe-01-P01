@@ -1,4 +1,4 @@
-# Transciber
+# Transcriber
 
 Text-To-Speech generator using `pyttsx3`, and Voice-to-text transcription using `vosk` or `whisper`.
 
@@ -14,14 +14,14 @@ The TextToSpeech class is very easy to use. Simple instantiate an object, and us
 
 #### Properties
 
-*engine* -> pyttsx3.engine: The pyttsx3 engine
-*rate* -> int: Speed the model speaks at. Defaults to 150.
+_engine_ -> pyttsx3.engine: The pyttsx3 engine
+_rate_ -> int: Speed the model speaks at. Defaults to 150.
 
 #### Functions
 
-*speak* (text) -> None:
-  Uses the engine to playback the text in the parameter to your systems default output device
-  Returns none
+_speak_ (text) -> None:
+Uses the engine to playback the text in the parameter to your systems default output device
+Returns none
 
 ### Transcription
 
@@ -33,17 +33,16 @@ model (str): Name of transcription model to use.
 
 #### Functions
 
-*acceptData* (bytes) -> None:
-  Stores the data in the chosen transcriber model
-  
-*getResults* (None) -> str:
-  Gets the result from the transcriber model using the data stored in the transcriber
+_acceptData_ (bytes) -> None:
+Stores the data in the chosen transcriber model
 
-*clearData* (None) -> None:
-  Empties the data in the transcriber model
+_getResults_ (None) -> str:
+Gets the result from the transcriber model using the data stored in the transcriber
+
+_clearData_ (None) -> None:
+Empties the data in the transcriber model
 
 ## Basic usage
-
 
 ```python
 import pyaudio
