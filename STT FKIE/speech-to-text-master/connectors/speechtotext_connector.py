@@ -61,7 +61,6 @@ class SpeechtotextConnector:
             self.emotion_model = EmotionModel(emotion_variant, emotion_config_object)
             self.audio_buffer = AudioSegment.silent(duration=0)
             self.current_buffer_start_timestamp = None
-            self.emotion_model = EmotionModel(emotion_variant, emotion_config_object)
 
             # Stop existing worker thread **before** resetting the queue
             if self.worker_thread and self.worker_thread.is_alive():
