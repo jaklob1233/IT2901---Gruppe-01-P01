@@ -20,5 +20,4 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 COPY . .
 
-#Not sure if this is working
-CMD ["python", "Sensevoice/downloadModel.py"]
+RUN python3 downloadModels.py
