@@ -1,6 +1,7 @@
 import time
 import os
 import base64
+import requests
 import threading
 import sounddevice as sd  # Use sounddevice for WSLg compatibility
 import numpy as np
@@ -184,7 +185,73 @@ class TestSpeechToText:
 
         except Exception as e:
             logger.error(f"Error during WAV file playback: {e}")
+            
+    def test_api(self):
+        url = 'http://localhost:8080/speechtotext/'
+        
+        start_time = time.time()
+        buffer = []
+        temp_audio = np.array([], dtype=np.int16)
 
+        print(sd.query_devices())
+
+        def callback(indata, frames, time_info, status):
+            if status:
+                logger.warning(f"Audio Status: {status}")
+            buffer.append(indata.copy())
+
+        blocksize = 1600
+        try:
+            with sd.InputStream(
+                samplerate=self.sample_rate,
+                channels=self.channels,
+                dtype='int16',
+                callback=callback,
+                blocksize=blocksize,
+                latency=0.5
+            ):
+                while self.running and time.time() - start_time < self.duration:
+                    try:
+                        if len(buffer) > 0:
+                            audio_chunk = buffer.pop(0)
+                            temp_audio = np.append(temp_audio, audio_chunk.flatten())
+
+                            if len(temp_audio) >= self.sample_rate * self.channels:
+                                one_second_audio = temp_audio[:self.sample_rate * self.channels]
+                                temp_audio = temp_audio[self.sample_rate * self.channels:]
+
+                                raw_audio = one_second_audio.tobytes()
+                                encoded_audio = base64.b64encode(raw_audio).decode("utf-8")
+                                timestamp = int((time.time() - start_time) * 1000)
+
+                                payload = {
+                                    "byte_array": encoded_audio,
+                                    "length": len(encoded_audio),
+                                    "sample_rate_hz": 16000,
+                                    "timestamp": timestamp 
+                                }
+                        
+                                logger.info(f"Sending audio to API: {payload}")
+                                
+                                headers = {
+                                    "Content-Type": "application/json",
+                                    "accept": "*/*"
+                                }
+
+                                response = requests.post(url + "provide_audio", json=payload, headers=headers)
+                                if response.status_code == 200:
+                                    logger.info(f"Audio sent successfully: {response.json()}")
+                                else:
+                                    logger.error(f"Failed to send audio: {response.status_code}, {response.text}")
+
+                        time.sleep(0.01)
+                    except Exception as e:
+                        logger.error(f"Error during audio capture and processing: {e}")
+                        self.running = False
+        except sd.PortAudioError as e:
+            logger.error(f"PortAudio error: {e}")
+        except Exception as e:
+            logger.error(f"General error: {e}")
 
     def run(self, mode="playfile"):
         # # Load the model and processor
@@ -233,6 +300,21 @@ class TestSpeechToText:
             time.sleep(5)
 
             capture_thread = threading.Thread(target=self.play_wav_file_and_send_audio)
+            
+        elif mode == "api":
+            url = 'http://localhost:8080/speechtotext/'
+            init_params = {
+                "speechtotext_variant": "Whisper",
+                "config_profile": "speech_to_text/config.ini",
+                "webhook_url": "None"
+            }
+            initialize = requests.put(url+"initialize", params=init_params)
+            
+            if initialize.status_code == 200:
+                logger.info("Initialization successful: %s", initialize.json())
+            else:
+                logger.error(f"Failed to initialize. Status code: {initialize.status_code}, Response: {initialize.text}")
+            capture_thread = threading.Thread(target=self.test_api)
 
         else:
             logger.error("Invalid mode. Use 'transcribe', 'loopback', or 'playfile'.")
@@ -254,7 +336,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Test Speech-to-Text or Loopback.")
-    parser.add_argument("--mode", choices=["transcribe", "loopback", "playfile"], default="playfile",
+    parser.add_argument("--mode", choices=["transcribe", "loopback", "playfile", "api"], default="api",
                         help="Mode to run the test: 'transcribe', 'loopback', or 'playfile'.")
     parser.add_argument("--duration", type=int, default=120, help="Duration of the test in seconds.")
     parser.add_argument("--wav", type=str, help="Path to a WAV file to play in 'playfile' mode.")
