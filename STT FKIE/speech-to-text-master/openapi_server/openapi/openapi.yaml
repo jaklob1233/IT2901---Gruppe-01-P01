@@ -6,38 +6,55 @@ info:
   title: SpeechToText
   version: 0.1.0
 servers:
-- url: https://localhost:8081/speechtotext
+  - url: https://localhost:8081/speechtotext
 paths:
   /initialize:
     put:
       description: Initialize the SpeechToText component
       operationId: initialize
       parameters:
-      - explode: true
-        in: query
-        name: speechtotext_variant
-        required: true
-        schema:
-          enum:
-          - Whisper
-          - Vosk
-          type: string
-        style: form
-      - explode: true
-        in: query
-        name: config_profile
-        required: true
-        schema:
-          type: string
-        style: form
-      - explode: true
-        in: query
-        name: webhook_url
-        required: true
-        schema:
-          title: text
-          type: string
-        style: form
+        - explode: true
+          in: query
+          name: speechtotext_variant
+          required: true
+          schema:
+            enum:
+              - Whisper
+              - Vosk
+            type: string
+          style: form
+        - explode: true
+          in: query
+          name: emotion_variant
+          required: true
+          schema:
+            enum:
+              - SenseVoice
+              - Superb
+            type: string
+          style: form
+        - explode: true
+          in: query
+          name: transcriber_config_profile
+          required: true
+          schema:
+            type: string
+          style: form
+        - explode: true
+          in: query
+          name: emotion_config_profile
+          required: true
+          schema:
+            type: string
+          style: form
+        - explode: true
+          in: query
+          name: webhook_url
+          required: true
+          schema:
+            title: text
+            type: string
+          style: form
       responses:
         "200":
           description: Success
@@ -45,7 +62,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
           description: Error
       summary: Initialize the SpeechToText component
       x-openapi-router-controller: openapi_server.controllers.default_controller
@@ -56,7 +73,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/_on_new_text_post_request'
+              $ref: "#/components/schemas/_on_new_text_post_request"
         description: Webhook for delivering new text from speech recognition to client
       responses:
         "200":
@@ -65,7 +82,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
           description: Error
       x-openapi-router-controller: openapi_server.controllers.default_controller
   /provide_audio:
@@ -76,7 +93,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/provide_audio_request'
+              $ref: "#/components/schemas/provide_audio_request"
         description: part of the audio (e.g. 20 ms) as byte array
         required: true
       responses:
@@ -86,7 +103,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
           description: Error
       summary: Provide audio to the SpeechToText component
       x-openapi-router-controller: openapi_server.controllers.default_controller

@@ -4,8 +4,6 @@ import torch
 from .Sensevoice.model import SenseVoiceSmall
 from .emotion_base_model import EmotionBaseModel
 
-TARGET_SAMPLE_RATE = 16000
-
 class SenseVoiceEmotion(EmotionBaseModel):
     def __init__(self, model_path: str):
         self.model_path = model_path
