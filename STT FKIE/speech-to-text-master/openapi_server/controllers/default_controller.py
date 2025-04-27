@@ -55,10 +55,12 @@ sys.stdout = StreamToLogger(logger, logging.INFO)   # Redirect standard output
 sys.stderr = StreamToLogger(logger, logging.ERROR)  # Redirect standard error
 
 
-def initialize(speechtotext_variant, config_profile, webhook_url):
+def initialize(speechtotext_variant, emotion_variant, transcriber_config_profile, emotion_config_profile, webhook_url):
     """Initialize the SpeechToText component
     :type speechtotext_variant: str
-    :type config_profile: str
+    :type emotion_variant: str
+    :type transcriber_config_profile: str
+    :type emotion_config_profile: str
     :type webhook_url: str
 
     :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]
@@ -69,8 +71,8 @@ def initialize(speechtotext_variant, config_profile, webhook_url):
 
     # --- speech-to-text initialization
     logger.info("Initializing speechtotext connector")
-    success &= speechtotext.initialize_speechtotext(speechtotext_variant=speechtotext_variant,
-                                                    config_profile=config_profile,
+    success &= speechtotext.initialize_speechtotext(speechtotext_variant=speechtotext_variant, emotion_variant=emotion_variant,
+                                                    transcriber_config_profile=transcriber_config_profile, emotion_config_profile=emotion_config_profile,
                                                     webhook_url=webhook_url)
     if not success:
         abort(400)
