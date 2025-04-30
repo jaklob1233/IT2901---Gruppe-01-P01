@@ -5,8 +5,6 @@ import torch
 from .Sensevoice.model import SenseVoiceSmall
 from .emotion_base_model import EmotionBaseModel
 
-TARGET_SAMPLE_RATE = 16000
-
 class SenseVoiceEmotion(EmotionBaseModel):
     """
     Wrapper class for the SenseVoiceSmall emotion recognition model.

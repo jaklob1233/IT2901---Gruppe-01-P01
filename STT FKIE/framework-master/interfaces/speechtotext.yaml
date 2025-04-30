@@ -23,7 +23,20 @@ paths:
             enum:
               - Whisper
               - Vosk
-        - name: config_profile
+        - name: emotion_variant
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - SenseVoice
+              - Superb
+        - name: transcriber_config_profile
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: emotion_config_profile
           in: query
           required: true
           schema:
@@ -34,13 +47,13 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Success
-        '400':
+        "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
           description: Error
 
   /provide_audio:
@@ -79,17 +92,17 @@ paths:
                     - "SGVsbG8gV29ybGQ="
         required: true
       responses:
-        '200':
+        "200":
           description: Success
-        '400':
+        "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
           description: Error
 
-# should (later) be a webhook. But since the code generators cannot handle this currently, modeled as normal method.
-#webhooks:
+  # should (later) be a webhook. But since the code generators cannot handle this currently, modeled as normal method.
+  #webhooks:
   /on_new_text:
     post:
       requestBody:
@@ -111,13 +124,13 @@ paths:
                   type: string
         required: true
       responses:
-        '200':
+        "200":
           description: Webhook acknowledged
-        '400':
+        "400":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
           description: Error
 
 components:
