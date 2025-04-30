@@ -1,0 +1,11 @@
+# Core dependencies
+torch>=1.9.0
+torchaudio>=0.9.0
+numpy>=1.21.0
+psutil>=5.8.0
+
+# Transformers and audio processing
+transformers>=4.9.0
+
+# Utilities
+funasr>=0.1.0  # For AutoModel and rich_transcription_postprocess

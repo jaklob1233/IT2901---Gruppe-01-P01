@@ -3,6 +3,8 @@ import base64
 from configobj import ConfigObj
 from openapi_client.api_client import SpeechToTextApiClient
 from speech_to_text.transcriber.transcriber import Transcriber
+from speech_emotion_recognition.emotion_model import EmotionModel
+
 from pydub import AudioSegment
 from pydub.silence import detect_nonsilent
 import threading
@@ -18,30 +20,42 @@ class SpeechtotextConnector:
     required_sample_size = 16  # bits
 
     silence_threshold = -10  # Silence threshold in dBFS
-    silence_duration = 500  # milliseconds
+    silence_duration = 400  # milliseconds
+    min_sentence_length = 200  # Minimum sentence length in milliseconds
     audio_buffer = None
     current_buffer_start_timestamp = None  # Tracks the timestamp of the buffer's start in ms
     collected_audio = AudioSegment.silent(duration=0)  # To collect all incoming audio
 
     api_client = None
     transcriber = None
+    emotion_model = None 
 
     # Added attributes for queue and worker thread
     audio_queue = None
     worker_thread = None
 
-    def initialize_speechtotext(self, speechtotext_variant, config_profile, webhook_url):
+
+    def initialize_speechtotext(self, speechtotext_variant, emotion_variant, transcriber_config_profile, emotion_config_profile, webhook_url):
         logger.info("Initializing speechtotext connector")
         try:
-            logger.debug(f"Loading configuration from: {config_profile}")
-            config_object = ConfigObj(config_profile)
+            logger.debug(f"Loading configuration from: {transcriber_config_profile}")
+            transcriber_config_object = ConfigObj(transcriber_config_profile)
+            emotion_config_object = ConfigObj(emotion_config_profile)
 
-            if not config_object:
-                logger.error(f"Configuration object loaded from {config_profile} is empty.")
+            if not transcriber_config_object:
+                logger.error(f"Configuration object loaded from {transcriber_config_profile} is empty.")
+                return False
+            
+            if not emotion_config_object:
+                logger.error(f"Configuration object loaded from {emotion_config_profile} is empty.")
                 return False
 
-            self.api_client = SpeechToTextApiClient(base_url=webhook_url)
-            self.transcriber = Transcriber(speechtotext_variant, config_object)
+            if not webhook_url:
+                self.api_client = None
+            else:
+                self.api_client = SpeechToTextApiClient(base_url=webhook_url)
+            self.transcriber = Transcriber(speechtotext_variant, transcriber_config_object)
+            self.emotion_model = EmotionModel(emotion_variant, emotion_config_object)
             self.audio_buffer = AudioSegment.silent(duration=0)
             self.current_buffer_start_timestamp = None
 
@@ -131,9 +145,12 @@ class SpeechtotextConnector:
                 silence_thresh=silence_thresh
             )
 
-            # Filter out nonsilent ranges where the right border is at the end of the buffer
+            # Filter out nonsilent ranges where:
+            # 1. The right border is at the end of the buffer
+            # 2. The duration is less than 200 ms
             valid_nonsilent_ranges = [
-                (start, end) for start, end in nonsilent_ranges if end < len(self.audio_buffer)
+                (start, end) for start, end in nonsilent_ranges
+                if end < len(self.audio_buffer) and (end - start) >= self.min_sentence_length
             ]
 
             if not valid_nonsilent_ranges:
@@ -142,12 +159,25 @@ class SpeechtotextConnector:
 
             # Log and enqueue each valid nonsilent chunk for processing
             logger.info(f"Processing {len(valid_nonsilent_ranges)} valid nonsilent chunk(s).")
+            # Assuming 'chunk' is already an AudioSegment and 'peep' is a 500 Hz sine wave beep
             for i, (start, end) in enumerate(valid_nonsilent_ranges, start=1):
                 absolute_start_time = self.current_buffer_start_timestamp + start
                 absolute_end_time = self.current_buffer_start_timestamp + end
-                logger.warning(
+                logger.info(
                     f"Enqueuing nonsilent chunk {i}: Absolute Start={absolute_start_time}ms, Absolute End={absolute_end_time}ms")
+
+                # Extract and process chunk
                 chunk = self.audio_buffer[start:end]
+
+                # Save to file
+                # output_dir = "logs/chunks"
+                # os.makedirs(output_dir, exist_ok=True)
+                # chunk_filename = f"chunk_{absolute_start_time}_{absolute_end_time}.wav"
+                # chunk_path = os.path.join(output_dir, chunk_filename)
+                # chunk.export(chunk_path, format="wav")
+                # logger.info(f"Saved chunk {i} to {chunk_path}")
+
+                # Enqueue the original chunk for further processing
                 self.audio_queue.put((chunk, absolute_start_time, absolute_end_time))
 
             # Clear the processed portion of the buffer
@@ -165,7 +195,7 @@ class SpeechtotextConnector:
         while True:
             try:
                 # Log queue status before retrieving the next item
-                logger.info(f"Queue size before getting item: {self.audio_queue.qsize()}")
+                logger.debug(f"Queue size before getting item: {self.audio_queue.qsize()}")
                 item = self.audio_queue.get()
 
                 if item is None:
@@ -173,33 +203,39 @@ class SpeechtotextConnector:
                     break
 
                 chunk, start_time, end_time = item
-                logger.info(f"Retrieved chunk from queue: Start={start_time}ms, End={end_time}ms")
-                logger.debug(f"Chunk raw data size: {len(chunk.raw_data)} bytes")
+                logger.info(f"Retrieved chunk from queue: Start={start_time}ms, End={end_time}ms, Chunk raw data size={len(chunk.raw_data)} bytes")
 
                 # Process the chunk
                 logger.info(f"Starting transcription for chunk: Start={start_time}ms, End={end_time}ms")
                 self.transcriber.accept_data(chunk.raw_data)
-                logger.info("Data successfully passed to transcriber.")
+                self.emotion_model.accept_data(chunk.raw_data)
 
+                # Get results from both models
                 result = self.transcriber.get_results()
+                result += self.emotion_model.get_results()
                 if result:
-                    logger.warning(f"Transcription result received: {result}")
+                    logger.info(f"Transcription result received: {result}")
+                    print(f"Transcription result received: {result}")
 
+                # Clear data from both models
                 self.transcriber.clear_data()
-                logger.info("Transcriber data cleared after processing.")
+                self.emotion_model.clear_data()
+                logger.debug("Transcriber data cleared after processing.")
 
                 if result:
-                    logger.info("Send transcription result to webhook.")
-                    self.api_client.on_new_text_post(
-                        on_new_text_post_request={
-                            "timestamp_start": start_time,
-                            "timestamp_end": end_time,
-                            "text": result
-                        },
-                        _request_timeout=(5, 10)  # 5 seconds connect timeout, 10 seconds read timeout
-                        # _headers={"Custom-Header": "CustomValue"}
-                    )
-                    logger.info("Sent transcription result to webhook.")
+                    if not self.api_client:
+                        logger.warning("No webhook defined.")
+                    else:
+                        logger.info("Send transcription result to webhook.")
+                        self.api_client.on_new_text_post(
+                            on_new_text_post_request={
+                                "timestamp_start": start_time,
+                                "timestamp_end": end_time,
+                                "text": result
+                            },
+                            _request_timeout=(5, 10)  # 5 seconds connect timeout, 10 seconds read timeout
+                            # _headers={"Custom-Header": "CustomValue"}
+                        )
 
                 # Mark task as done in the queue
                 self.audio_queue.task_done()

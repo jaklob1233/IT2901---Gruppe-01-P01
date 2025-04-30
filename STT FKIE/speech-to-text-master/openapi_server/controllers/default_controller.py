@@ -20,7 +20,7 @@ if not os.path.isabs(filename):
 logging.basicConfig(
     filename=filename,
     filemode="w",
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s",
     force=True,
 )

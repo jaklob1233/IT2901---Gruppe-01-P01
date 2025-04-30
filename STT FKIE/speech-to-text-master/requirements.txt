@@ -22,6 +22,12 @@ pyttsx3
 paho-mqtt
 configobj
 
+# ------------ speech-emotion-recognition
+transformers>=4.9.0
+funasr>=0.1.0
+numpy>=1.21.0
+psutil>=5.8.0
+
 # ------------ audio processing
 pydub
 requests
@@ -30,5 +36,8 @@ Werkzeug
 # ------------ PyTorch and Torchaudio (CPU version)
 --index-url https://download.pytorch.org/whl/cpu
 --extra-index-url https://pypi.org/simple
-torch==2.5.0
-torchaudio==2.5.0
+torch>=1.9.0
+torchaudio>=0.9.0
+
+sounddevice
+scipy
