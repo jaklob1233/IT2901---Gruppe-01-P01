@@ -58,12 +58,6 @@ ENV ENCODINGS_LOCAL_PATH="${BASE_LOCAL_PATH}/encodings"
 RUN sed -i "s|${GPT2_URL_TO_REPLACE}|${ENCODINGS_LOCAL_PATH}|g" ${OPENAI_PUBLIC_FILE} && \
     sed -i "s|${ENCODINGS_URL_TO_REPLACE}|${ENCODINGS_LOCAL_PATH}|g" ${OPENAI_PUBLIC_FILE}
 
-# download speech-to-text models
-# Download Vosk multilingual model (0.3)
-#RUN curl https://alphacephei.com/vosk/models/vosk-model-multilingual-0.3.zip -o vosk_model_multilingual_medium.zip && \
-#    unzip vosk_model_multilingual.zip -d /models/vosk_multilingual_medium && \
-#    rm vosk_model_multilingual_medium.zip
-
 # Download Whisper multilingual base model
 RUN mkdir -p /models/whisper_multilingual_base && \
     curl https://openaipublic.azureedge.net/main/whisper/models/ed3a0b6b1c0edf879ad9b11b1af5a0e6ab5db9205f891f668f8b0e6c6326e34e/base.pt -o /models/whisper_multilingual_base/base.pt
@@ -82,7 +76,7 @@ RUN mkdir -p /models/whisper_english_base && \
     curl https://openaipublic.azureedge.net/main/whisper/models/25a8566e1d0c1e2231d1c762132cd20e0f96a85d16145c3a00adf5d1ac670ead/base.en.pt -o /models/whisper_english_base/base.en.pt && \
     curl https://openaipublic.azureedge.net/main/whisper/models/ed3a0b6b1c0edf879ad9b11b1af5a0e6ab5db9205f891f668f8b0e6c6326e34e/base.pt -o /models/whisper_english_base/base.pt
 
-# download speech-to-text encodings
+# Download speech-to-text encodings
 RUN mkdir -p /encodings && \
     curl https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe -o /encodings/vocab.pbe && \
     curl https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json -o /encodings/encoder.json && \
@@ -91,26 +85,23 @@ RUN mkdir -p /encodings && \
     curl https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken -o /encodings/cl100k_base.tiktoken && \
     curl https://openaipublic.blob.core.windows.net/encodings/o200k_base.tiktoken -o /encodings/o200k_base.tiktoken
 
-
-
 FROM python:3.11-slim-bullseye
 
 # Set Python 3.11
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3.11 1
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends portaudio19-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libgomp1 && \
+    apt-get install -y --no-install-recommends \
+    portaudio19-dev \
+    libgomp1 \
+    libatomic1 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=intermediate /install /usr/local
 COPY --from=intermediate /usr/local/bin/ffmpeg /usr/local/bin
 COPY --from=intermediate /usr/local/bin/ffprobe /usr/local/bin
 
-#copy the code files
+#Copy the code files
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/logs
 
@@ -126,6 +117,8 @@ COPY openapi_server /usr/src/app/openapi_server
 COPY speech_to_text /usr/src/app/speech_to_text
 COPY speech_emotion_recognition /usr/src/app/speech_emotion_recognition
 COPY test /usr/src/app/test
+
+#Download SER models
 RUN python3 -m speech_emotion_recognition.downloadModels
 
 EXPOSE 8081
