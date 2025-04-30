@@ -79,7 +79,7 @@ class SenseVoiceEmotion(EmotionBaseModel):
         emotion_probs = dict(res[0]["possible_emotions"])
         dominant_emotion = max(emotion_probs, key=emotion_probs.get)
         probability = emotion_probs[dominant_emotion]
-        return f"{dominant_emotion} ({probability:.2f})"
+        return f" ({dominant_emotion}, {probability:.2f})"
 
     def clear_data(self) -> None:
         """
