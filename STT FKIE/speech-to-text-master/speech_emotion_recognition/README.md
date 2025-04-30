@@ -4,7 +4,7 @@ This project implements speech emotion recognition (SER) using SenseVoice and Su
 
 ## Requirements
 
-- Python 3.8 or newer
+- Python 3.10
 - Docker
 
 ## Install and Run (Locally)
@@ -18,7 +18,7 @@ This project implements speech emotion recognition (SER) using SenseVoice and Su
 2. **Create and activate a virtual environment (recommended):**
 
    ```bash
-   python3 -m venv venv
+   python3.10 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
