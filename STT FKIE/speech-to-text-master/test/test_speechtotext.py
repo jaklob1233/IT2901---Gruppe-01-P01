@@ -187,7 +187,7 @@ class TestSpeechToText:
             logger.error(f"Error during WAV file playback: {e}")
             
     def test_api(self):
-        url = 'http://localhost:8080/speechtotext/'
+        url = 'http://localhost:8081/speechtotext/'
         
         start_time = time.time()
         buffer = []
@@ -302,10 +302,12 @@ class TestSpeechToText:
             capture_thread = threading.Thread(target=self.play_wav_file_and_send_audio)
             
         elif mode == "api":
-            url = 'http://localhost:8080/speechtotext/'
+            url = 'http://localhost:8081/speechtotext/'
             init_params = {
                 "speechtotext_variant": "Whisper",
-                "config_profile": "speech_to_text/config.ini",
+                "emotion_variant": "SenseVoice",
+                "transcriber_config_profile": "speech_to_text/config.ini",
+                "emotion_config_profile": "speech_emotion_recognition/config.ini",
                 "webhook_url": "None"
             }
             initialize = requests.put(url+"initialize", params=init_params)
