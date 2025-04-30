@@ -25,6 +25,8 @@ This project implements speech emotion recognition (SER) using SenseVoice and Su
 3. **Install dependencies:**
 
    ```bash
+   brew install portaudio # For mac
+
    pip install -r requirements.txt
    ```
 
