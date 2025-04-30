@@ -34,20 +34,6 @@ This project implements speech emotion recognition (SER) using SenseVoice and Su
    python downloadModels.py
    ```
 
-5. **Run the desired script:**
-
-   For SenseVoice-based emotion recognition:
-
-   ```bash
-   python sensevoice_emotion.py
-   ```
-
-   For Superb-based emotion recognition:
-
-   ```bash
-   python superb_emotion.py
-   ```
-
 ---
 
 ## Run with Docker
@@ -64,6 +50,11 @@ This project implements speech emotion recognition (SER) using SenseVoice and Su
    ```
 
 ---
+
+## Testing the models
+   The models can be tested in ```speech-to-text-master/test/test_speechtotext.py```
+   - remember to configure which model by changing ```emotion_variant= ``` to either ```Sensevoice``` or ```Superb``` in ``` def run(self, mode="playfile")```
+   
 
 ## Notes
 
