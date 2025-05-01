@@ -261,7 +261,7 @@ if __name__ == "__main__":
     parser.add_argument("--duration", type=int, default=120, help="Duration of the test in seconds.")
     parser.add_argument("--wav", type=str, help="Path to a WAV file to play in 'playfile' mode.")
     parser.add_argument("--emotion", type=str, default="SenseVoice", help="Emotion model to use.")  
-    parser.add_argument("--transcriber", type=str, default="Vosk", help="Transcriber model to use.")
+    parser.add_argument("--transcriber", type=str, default="Whisper", help="Transcriber model to use.")
 
     args = parser.parse_args()
 
