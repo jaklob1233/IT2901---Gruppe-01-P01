@@ -212,11 +212,9 @@ class SpeechtotextConnector:
                 logger.info(f"Starting transcription for chunk: Start={start_time}ms, End={end_time}ms")
                 self.transcriber.accept_data(chunk.raw_data)
                 self.emotion_model.accept_data(chunk.raw_data)
-                self.emotion_model.accept_data(chunk.raw_data)
 
                 # Get results from both models
                 result = self.transcriber.get_results()
-                result += self.emotion_model.get_results()
                 result += self.emotion_model.get_results()
                 if result:
                     logger.info(f"Transcription result received: {result}")
@@ -224,7 +222,6 @@ class SpeechtotextConnector:
 
                 # Clear data from both models
                 self.transcriber.clear_data()
-                self.emotion_model.clear_data()
                 self.emotion_model.clear_data()
                 logger.debug("Transcriber data cleared after processing.")
 
