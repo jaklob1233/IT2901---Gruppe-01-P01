@@ -41,13 +41,15 @@ logger = logging.getLogger(__name__)
 
 
 class TestSpeechToText:
-    def __init__(self, duration=120, wav_file_path="test/samples/A_eng_f1.wav"):
+    def __init__(self, duration=120, wav_file_path="test/samples/A_eng_f1.wav", emotion="SenseVoice", transcriber="Vosk"):
         self.duration = duration
         self.sample_rate = 16000
         self.channels = 1
         self.connector = SpeechtotextConnector()
         self.running = True
         self.wav_file_path = wav_file_path
+        self.emotion = emotion
+        self.transcriber = transcriber
 
     def capture_and_send_audio(self):
         start_time = time.time()
@@ -203,8 +205,8 @@ class TestSpeechToText:
 
         if mode == "transcribe":
             initialized = self.connector.initialize_speechtotext(
-                speechtotext_variant="Whisper",
-                emotion_variant="SenseVoice",
+                speechtotext_variant=self.transcriber,
+                emotion_variant=self.emotion,
                 transcriber_config_profile="speech_to_text/config.ini",
                 emotion_config_profile="speech_emotion_recognition/config.ini",
                 webhook_url=None
@@ -220,8 +222,8 @@ class TestSpeechToText:
 
         elif mode == "playfile":
             initialized = self.connector.initialize_speechtotext(
-                speechtotext_variant="Whisper",
-                emotion_variant="SenseVoice",
+                speechtotext_variant=self.transcriber,
+                emotion_variant=self.emotion,
                 transcriber_config_profile="speech_to_text/config.ini",
                 emotion_config_profile="speech_emotion_recognition/config.ini",
                 webhook_url=None
@@ -258,8 +260,11 @@ if __name__ == "__main__":
                         help="Mode to run the test: 'transcribe', 'loopback', or 'playfile'.")
     parser.add_argument("--duration", type=int, default=120, help="Duration of the test in seconds.")
     parser.add_argument("--wav", type=str, help="Path to a WAV file to play in 'playfile' mode.")
+    parser.add_argument("--emotion", type=str, default="SenseVoice", help="Emotion model to use.")  
+    parser.add_argument("--transcriber", type=str, default="Vosk", help="Transcriber model to use.")
 
     args = parser.parse_args()
 
-    tester = TestSpeechToText(duration=args.duration, wav_file_path=args.wav)
+    tester = TestSpeechToText(duration=args.duration, wav_file_path=args.wav, 
+                              emotion=args.emotion, transcriber=args.transcriber)
     tester.run(mode=args.mode)
