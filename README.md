@@ -7,19 +7,19 @@ This project extends the existing speech-to-text (STT) communication system deve
 ## System architecture
 The system is organized into four main components:
 
- - **Speech to text:** Handles both the transcription of audio to text and the detection of emotions from speech.
+ - **Speech-to-text:** Handles both the transcription of audio to text and the detection of emotions from speech.
 
  - **MQTT transport:** Manages message transport using the MQTT protocol.
 
  - **Linphone adapter:** Interfaces with Linphone for audio capture and VoIP functionality.
 
- - **Text to speech:** Converts received text (and optionally emotion) back into speech.
+ - **Text-to-speech:** Converts received text (and optionally emotion) back into speech.
 
 Each component runs in its own Docker container and communicates via defined interfaces and webhooks. For more details on running and configuring each part, refer to their respective READMEs in their respective directories.
 
 ## Speech emotion recognition integration
 ### Motivation
-Previously, the STT system enabled efficient, bandwidth-saving communication by sending transcribed text instead of audio. However, this approach omitted the emotional cues present in speech, which are critical for understanding urgency, stress, or intent-especially in military operations. The integration of SER addresses this gap by appending emotional metadata to each transcribed message, allowing recipients to better interpret the sender’s state and respond appropriately
+Previously, the STT system enabled efficient, bandwidth-saving communication by sending transcribed text instead of audio. However, this approach omitted the emotional cues present in speech, which are critical for understanding urgency, stress, or intent, especially in military operations. The integration of SER addresses this gap by appending emotional data to each transcribed message, allowing recipients to better interpret the sender’s state and respond appropriately
 
 ### Scope of work
  - **System and component integration:** \
@@ -40,14 +40,14 @@ The system processes audio in real time, running transcription and emotion detec
 
 ## Functional overview
 - **Input:** \
-Audio is captured via Linphone and forwarded to the Speech to text module.
+Audio is captured via Linphone and forwarded to the speech-to-text module.
 
 - **Processing:**
     - Audio is divided into manageable chunks.
 
     - Each chunk is transcribed to text (using Vosk or Whisper).
 
-    - SER models (Supero or SenseVoice) analyze the same chunk for emotional content.
+    - SER models (Superb or SenseVoice) analyze the same chunk for emotional content.
 
     - Results (text, emotion label, and confidence score) are bundled.
 
@@ -55,10 +55,10 @@ Audio is captured via Linphone and forwarded to the Speech to text module.
 The combined transcription and emotion data are published via MQTT for delivery to recipients.
 
 - **Reception:** \
-On the receiving side, messages can be played back using text to speech, including the detected emotion.
+On the receiving side, messages can be played back using text-to-speech, including the detected emotion.
 
 ## Key features
- - **Offline, real-Time emotion recognition:** \
+ - **Offline, real-time emotion recognition:** \
 All SER processing is performed locally, ensuring operational security and independence from cloud services.
 
  - **Multi-Model support:** \
