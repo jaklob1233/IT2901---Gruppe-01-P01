@@ -76,11 +76,10 @@ Talk in english into you microphone for transcription and emotion recognition.
    Mac:
    ```
    docker run --rm -d --network host --name speechtotext speechtotext
-   ```
+   ```   
+
 
    Windows:
    ```
-   docker run --rm -p 8080:8080 --name speechtotext speechtotext
+   docker run --rm -d -p 8080:8080 --name speechtotext speechtotext
    ```
-
-
