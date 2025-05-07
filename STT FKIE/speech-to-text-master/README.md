@@ -62,7 +62,7 @@ python -m test.test_speechtotext --mode transcribe
 
 Talk in english into you microphone for transcription and emotion recognition.
 
-## Install and run thorugh Docker
+## Install and run through Docker
 ### Requirements
 
 - Docker
@@ -73,6 +73,14 @@ Talk in english into you microphone for transcription and emotion recognition.
    ```
 
 ### Run image
+   Mac:
    ```
    docker run --rm -d --network host --name speechtotext speechtotext
    ```
+
+   Windows:
+   ```
+   docker run --rm -p 8080:8080 --name speechtotext speechtotext
+   ```
+
+
