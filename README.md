@@ -2,7 +2,7 @@
 ## Overview
 This project extends the existing speech-to-text (STT) communication system developed for the Norwegian Defence Research Establishment (FFI), in collaboration with Fraunhofer Institute for Communication, Information Processing and Ergonomics FKIE, and NATO IST-201 research group by integrating Speech Emotion Recognition (SER) capabilities into the system. The enhanced system transcribes spoken audio into text and simultaneously detects the speaker's emotional state, transmitting both to the recipient. This provides richer context in text-based communication, particularly valuable in operational and military settings where emotional nuance can impact decision-making and prioritization.
 
-**Note:** All changes and new functionality are implemented solely within the `speech-to-text-master` component. No modifications have been made to the other system components (`mqtt-transport-master`, `linphone-adapter-master`, `text-to-speech-master`). Each of these has its own README for setup and usage instructions.
+**Note:** All changes and new functionality are implemented solely within the `speech-to-text-master` component. No modifications have been made to the other system components (`mqtt-transport-master`, `linphone-adapter-master`, `text-to-speech-master`). Each of these has its own README for setup and usage instructions. Our code can be run solely by running the file `test_speechtotext.py` in the path `STTE/speech-to-text-master/test` after downloading the SER models, transcriber models and dependencies.
 
 ## System architecture
 The system is organized into four main components:
@@ -19,11 +19,11 @@ Each component runs in its own Docker container and communicates via defined int
 
 ## Speech emotion recognition integration
 ### Motivation
-Previously, the STT system enabled efficient, bandwidth-saving communication by sending transcribed text instead of audio. However, this approach omitted the emotional cues present in speech, which are critical for understanding urgency, stress, or intent, especially in military operations. The integration of SER addresses this gap by appending emotional data to each transcribed message, allowing recipients to better interpret the sender’s state and respond appropriately
+Previously, the STT system enabled efficient, bandwidth-saving communication by sending transcribed text instead of audio. However, this approach omitted the emotional cues present in speech, which are critical for understanding urgency, stress, or intent, especially in military operations. The integration of SER addresses this gap by appending emotional data to each transcribed message, allowing recipients to better interpret the sender’s state and respond appropriately.
 
 ### Scope of work
  - **System and component integration:** \
-The integration of SER is strictly limited to the speech-to-text-master directory. No changes have been made to the MQTT transport, Linphone adapter, or Text to speech modules.
+The integration of SER is strictly limited to the speech-to-text-master directory. No changes have been made to the MQTT transport, Linphone adapter, or Text-to-speech modules.
 
  - **SER model implementation:**\
 Two SER models have been integrated:
